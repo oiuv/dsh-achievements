@@ -1,0 +1,9 @@
+- insert:
+    - id: dsh-achievements
+      name: '@local/dsh-achievements'
+      config:
+        database: !!js dshHomePath('achievements', 'stats.sqlite')
+        timeZone: !!js Intl.DateTimeFormat().resolvedOptions().timeZone
+        pollMs: 3000
+        pageSize: 512
+        busyTimeoutMs: 5000
