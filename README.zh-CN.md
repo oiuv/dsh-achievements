@@ -72,7 +72,7 @@ npm run check
 npm pack
 ```
 
-界面源码为 `src/client.js`、`src/client.css` 和双语字典；`src/catalog.js` 管理成就条件和经验。提交源码时同步提交生成的 `client.js`。CI 在 Windows、Linux 的 Node 22.19 和 24 上检查测试、可重复构建及打包。
+界面源码为 `src/client.js`、`src/client.css` 和双语字典；`src/catalog.js` 管理成就条件和经验。提交源码时同步提交生成的 `client.js`。构建显式设置编译选项，不继承父目录的 tsconfig。CI 在 Windows、Linux 的 Node 22.19 和 24 上检查测试、可重复构建及打包。
 
 `src/engine.js` 负责事件统计、读取位置和成就的事务持久化；`src/collector.js` 负责历史读取与取消。插件自身测试覆盖重放、失败、时区和卸载。插件不新增模型输入或会话事件，不修改 DSH 持久化格式。统计状态和读取位置在同一个 SQLite 事务内提交，无需另设运行时不变量插件。
 

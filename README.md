@@ -72,7 +72,7 @@ npm run check
 npm pack
 ```
 
-Edit `src/client.js`, `src/client.css`, and the bilingual dictionaries for UI work. `src/catalog.js` owns achievement requirements and XP. Commit the generated `client.js` with its sources. CI verifies tests, reproducible builds and packaging on Windows and Linux using Node 22.19 and 24.
+Edit `src/client.js`, `src/client.css`, and the bilingual dictionaries for UI work. `src/catalog.js` owns achievement requirements and XP. Commit the generated `client.js` with its sources. The build uses explicit compiler options and ignores parent tsconfig files. CI verifies tests, reproducible builds and packaging on Windows and Linux using Node 22.19 and 24.
 
 `src/engine.js` owns atomic event reduction/checkpoints and unlocks. `src/collector.js` reads DSH history and handles cancellation. Their owner-local tests cover replay, failures, timezone changes and teardown. No new model-visible input or session event is introduced. The plugin does not modify DSH persistence schemas and needs no separate runtime-invariant installer: its checkpoint and reduced state commit in one SQLite transaction.
 

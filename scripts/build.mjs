@@ -6,6 +6,7 @@ const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url
 const result = await build({
   absWorkingDir: fileURLToPath(new URL('..', import.meta.url)),
   entryPoints: ['src/client.js'], bundle: true, write: false,
+  tsconfigRaw: { compilerOptions: { strict: true } },
   format: 'cjs', platform: 'browser', target: 'es2022', legalComments: 'none',
   loader: { '.css': 'text' },
   external: ['react', '@deepseek-ai/dsh-client-ui-primitives'],
