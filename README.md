@@ -4,28 +4,59 @@
 
 Local usage statistics and 36 achievements for DeepSeek Harness. The Hall counts persisted session events, recognizes work across DSH capabilities, and shows progress toward the next challenge.
 
+## Preview
+
+Screenshots show the Chinese interface with sample data.
+
+### Usage statistics
+
+View session, message and output-token totals alongside level progress and the next challenges.
+
+![Statistics overview with level progress, usage totals and upcoming challenges](docs/screenshots/statistics.png)
+
+### Achievement records
+
+Browse achievement badges, unlock dates and progress, with filters for category and unlock status.
+
+![Achievement collection with unlocked badges, unlock dates and challenge progress](docs/screenshots/achievements.png)
+
 ## Install
 
 Requires DSH `0.1.7-rc.2`, its Web profile, and Node `^22.19.0 || >=24`. DSH APIs are pre-stable; other releases require verification.
 
-Download the release tarball, then run:
+### From a DSH source checkout
 
-```sh
-dsh plugin --profile web add ./local-dsh-achievements-0.2.0.tgz
-dsh --profile web
-```
-
-Restart an already running DSH Host and reload the page. Open **Achievement Hall** in the sidebar.
-
-Install from a GitHub checkout:
+Prepare and build DSH following its source setup instructions first. Run the following commands from the **deepseek-harness repository root**, not from the plugin directory. If `dsh-achievements` already exists, skip cloning it.
 
 ```sh
 git clone https://github.com/oiuv/dsh-achievements.git
-dsh plugin --profile web add ./dsh-achievements
-dsh --profile web
+pnpm dsh plugin --profile web add ./dsh-achievements
+pnpm dsh web
 ```
 
-The repository includes the built `client.js`; installation does not run a build script. Keep the package name `@local/dsh-achievements` consistent in package.json and cordis.patch.yml. Remove with `dsh plugin --profile web remove @local/dsh-achievements`.
+`pnpm dsh web` is shorthand for `pnpm dsh --profile web`: both start the same Web profile. `pnpm` runs the DSH repository's launcher; it does not select a different profile. Keep these commands in the DSH repository root.
+
+To install a release tarball instead, download it to the DSH repository root and run:
+
+```sh
+pnpm dsh plugin --profile web add ./local-dsh-achievements-0.2.0.tgz
+pnpm dsh web
+```
+
+The plugin checkout may also live outside the DSH repository: pass its path to `add`. Copying a folder into the repository alone does not activate it. Installation belongs to `$DSH_HOME/profiles/web/`.
+
+### With a globally installed DSH CLI
+
+If `dsh` is installed and available on PATH, omit `pnpm`. From the directory containing the plugin checkout, run:
+
+```sh
+dsh plugin --profile web add ./dsh-achievements
+dsh web
+```
+
+Restart an already running DSH Host and reload the page. Open **Achievements** in the sidebar. The Hall shows level progress, illustrated achievement badges, tool usage bars, and hourly activity in the current DSH theme.
+
+The repository includes the built `client.js`; installation does not run a build script. Keep the package name `@local/dsh-achievements` consistent in package.json and cordis.patch.yml. From a DSH source checkout, remove with `pnpm dsh plugin --profile web remove @local/dsh-achievements`; with the global CLI, omit `pnpm`.
 
 ## Statistics and achievement rules
 

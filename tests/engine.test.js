@@ -164,3 +164,18 @@ test('maximum player rank is attainable and platinum does not require secrets', 
   for(const item of achievements.filter(a=>!['platinum','secret'].includes(a.tier))) store.db.prepare('INSERT INTO unlocks VALUES (?,?)').run(item.id,at);
   const data=store.snapshot(at);assert.ok(data.unlocked.platinum);assert.equal(Object.keys(data.unlocked).length,33);
 });
+
+test('level progress starts at each earned XP threshold', () => {
+  assert.equal(playerLevel({}).current, 0);
+  const earned = {};
+  for (const item of achievements) {
+    earned[item.id] = { at };
+    const level = playerLevel(earned);
+    assert.ok(level.xp >= level.current);
+    if (level.next !== null) {
+      const fraction = (level.xp - level.current) / (level.next - level.current);
+      assert.ok(fraction >= 0 && fraction < 1);
+    }
+  }
+  assert.equal(playerLevel(earned).current, 3500);
+});

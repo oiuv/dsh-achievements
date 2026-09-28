@@ -18,6 +18,7 @@
     "src/engine.js",
     "src/collector.js",
     "src/catalog.js",
+    "docs/screenshots",
     "README.md",
     "README.zh-CN.md",
     "LICENSE"

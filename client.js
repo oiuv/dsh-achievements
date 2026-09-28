@@ -745,11 +745,22 @@ function playerLevel(unlocked) {
   const xp = achievements.reduce((sum, item) => sum + (unlocked[item.id] ? item.points : 0), 0);
   const thresholds = [0, 150, 600, 1500, 2500, 3500];
   const level = thresholds.filter((value) => xp >= value).length;
-  return { xp, level, next: thresholds[level] ?? null };
+  return { xp, level, current: thresholds[level - 1], next: thresholds[level] ?? null };
 }
 
 // src/locales.js
 var en = {
+  levelProgress: "Progress to the next level",
+  viewAll: "View all",
+  publicProgress: "{count} / {total} public achievements",
+  noTools: "Your successful tool calls will appear here.",
+  allPublicComplete: "All public challenges complete. Your platinum badge is waiting in the collection.",
+  pathLabel: "Path",
+  statusLabel: "Progress",
+  resultCount: "{count} achievements",
+  noMatches: "No achievements match these filters.",
+  resetFilters: "Reset filters",
+  hourActivity: "{hour}:00 \xB7 {count} user messages",
   title: "DSH Achievement Hall",
   button: "Achievements",
   close: "Close",
@@ -832,6 +843,17 @@ var en = {
   "metric.relaySessions": "Relay sessions"
 };
 var zh = {
+  levelProgress: "\u5347\u5F80\u4E0B\u4E00\u7EA7\u7684\u8FDB\u5EA6",
+  viewAll: "\u67E5\u770B\u5168\u90E8",
+  publicProgress: "\u516C\u5F00\u6210\u5C31 {count} / {total}",
+  noTools: "\u6210\u529F\u4F7F\u7528\u5DE5\u5177\u540E\uFF0C\u8FD9\u91CC\u4F1A\u663E\u793A\u8C03\u7528\u5206\u5E03",
+  allPublicComplete: "\u516C\u5F00\u6311\u6218\u5DF2\u5168\u90E8\u5B8C\u6210\uFF0C\u524D\u5F80\u56FE\u9274\u67E5\u770B\u4F60\u7684\u767D\u91D1\u6210\u5C31",
+  pathLabel: "\u6210\u957F\u8DEF\u7EBF",
+  statusLabel: "\u89E3\u9501\u72B6\u6001",
+  resultCount: "{count} \u9879\u6210\u5C31",
+  noMatches: "\u6CA1\u6709\u7B26\u5408\u7B5B\u9009\u6761\u4EF6\u7684\u6210\u5C31",
+  resetFilters: "\u91CD\u7F6E\u7B5B\u9009",
+  hourActivity: "{hour}:00 \xB7 {count} \u6761\u7528\u6237\u6D88\u606F",
   title: "DSH \u6210\u5C31\u6BBF\u5802",
   button: "\u6210\u5C31",
   close: "\u5173\u95ED",
@@ -986,11 +1008,29 @@ function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearT
 }
 
 // src/client.css
-var client_default = ".dsha-dialog{width:min(980px,100%)!important;max-height:100%}\n.dsha-content{overflow:auto;min-height:0}\n.dsha{color:var(--dsw-alias-label-primary);font-size:13px;line-height:1.55}\n.dsha *{box-sizing:border-box}\n.dsha button,.dsha select{font:inherit;color:inherit}\n.dsha-hero{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:22px;border:1px solid var(--dsw-alias-border-l1);border-radius:var(--dsw-radius-panel,12px);background:var(--dsw-alias-bg-layer-1)}\n.dsha-rank{font-size:24px;font-weight:500;margin:4px 0}\n.dsha-kicker,.dsha-muted{color:var(--dsw-alias-label-secondary)}\n.dsha-score{font-size:24px;font-weight:500;color:var(--dsw-alias-brand-primary);white-space:nowrap}\n.dsha-tabs,.dsha-filters{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}\n.dsha-btn,.dsha select{background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l1);padding:7px 12px;border-radius:8px;cursor:pointer}\n.dsha-btn[aria-pressed=true]{color:var(--dsw-alias-brand-primary);border-color:var(--dsw-alias-brand-primary)}\n.dsha-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}\n.dsha-stat{padding:14px;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l1);border-radius:10px}\n.dsha-stat strong{display:block;font-size:23px;font-weight:500}\n.dsha-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}\n.dsha-card{padding:16px;border:1px solid var(--dsw-alias-border-l1);border-radius:12px;background:var(--dsw-alias-bg-layer-1)}\n.dsha-card[data-unlocked=true]{border-color:var(--dsw-alias-brand-primary)}\n.dsha-card-top{display:flex;justify-content:space-between;gap:8px;color:var(--dsw-alias-label-secondary);font-size:12px}\n.dsha-card h3{font-size:16px;font-weight:500;margin:8px 0}\n.dsha-card p{margin:8px 0}\n.dsha progress{display:block;width:100%;height:6px;margin:12px 0;accent-color:var(--dsw-alias-brand-primary)}\n.dsha-requirements{font-size:12px;margin:8px 0;padding-left:18px;color:var(--dsw-alias-label-secondary)}\n.dsha-section{font-size:16px;font-weight:500;margin:22px 0 12px}\n.dsha-list{display:grid;gap:8px}.dsha-list-row{display:flex;justify-content:space-between;gap:20px}\n.dsha-status{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:14px 0;color:var(--dsw-alias-label-secondary)}\n.dsha-error{border-left:3px solid var(--dsw-alias-brand-primary);padding:8px 12px;margin:12px 0}\n.dsha-hours{display:flex;align-items:end;gap:4px;height:70px;margin:16px 0 4px}\n.dsha-hour{flex:1;background:var(--dsw-alias-brand-primary);border-radius:3px 3px 0 0}\n.dsha-hours-labels{display:flex;justify-content:space-between;color:var(--dsw-alias-label-secondary);font-size:11px}\n.dsha-footer{border-top:1px solid var(--dsw-alias-border-l1);padding-top:14px;margin-top:22px;color:var(--dsw-alias-label-secondary)}\n.dsha-launcher{display:flex;align-items:center;gap:5px;background:none;border:0;color:var(--dsw-alias-label-secondary);padding:5px;cursor:pointer;font:inherit}\n.dsha-loading{min-height:180px;display:grid;place-items:center}\n.dsha-spinner{width:22px;height:22px;border:2px solid var(--dsw-alias-border-l1);border-top-color:var(--dsw-alias-brand-primary);border-radius:50%;animation:dsha-spin 1s linear infinite}\n@keyframes dsha-spin{to{transform:rotate(360deg)}}\n@media(max-width:650px){.dsha-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dsha-grid{grid-template-columns:1fr}.dsha-hero{padding:14px;gap:12px}.dsha-rank,.dsha-score{font-size:20px}}\n@media(prefers-reduced-motion:reduce){.dsha-spinner{animation:none}}\n";
+var client_default = ".dsha-dialog { width: min(1040px, 100%) !important; max-height: 100%; }\n.dsha-content { overflow: auto; min-height: 0; }\n.dsha {\n  --dsha-accent: var(--dsw-alias-link);\n  color: var(--dsw-alias-label-primary);\n  font: 13px/1.55 var(--dsw-font-family);\n  font-variant-numeric: tabular-nums;\n}\n.dsha * { box-sizing: border-box; }\n.dsha p { margin: 0; }\n.dsha button, .dsha select { font: inherit; color: inherit; }\n.dsha button { cursor: pointer; }\n.dsha-muted, .dsha-kicker { color: var(--dsw-alias-label-secondary); }\n.dsha-caption { font-size: 12px; line-height: 1.5; }\n.dsha-hero {\n  display: flex; align-items: center; gap: 22px; padding: 26px;\n  border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg);\n  background: linear-gradient(115deg, color-mix(in srgb, var(--dsha-accent) 9%, var(--dsw-alias-bg-layer-1)), var(--dsw-alias-bg-layer-1) 75%);\n}\n.dsha-level-ring {\n  display: grid; place-items: center; flex: 0 0 88px; width: 88px; height: 88px;\n  border-radius: 50%; corner-shape: round;\n  background: conic-gradient(var(--dsha-accent) var(--dsha-progress), color-mix(in srgb, var(--dsha-accent) 12%, var(--dsw-alias-bg-layer-1)) 0);\n}\n.dsha-level-core {\n  display: flex; flex-direction: column; align-items: center; justify-content: center;\n  width: 76px; height: 76px; border-radius: 50%; corner-shape: round;\n  color: var(--dsha-accent); background: var(--dsw-alias-bg-layer-1);\n}\n.dsha-level-core strong { font-size: 26px; line-height: 1.1; font-weight: 500; }\n.dsha-identity { flex: 1; min-width: 0; }\n.dsha-kicker { font-size: 12px; line-height: 1.5; }\n.dsha-rank { font-size: 26px; line-height: 1.3; font-weight: 500; margin: 4px 0 6px; }\n.dsha-level-detail { flex: 0 0 190px; }\n.dsha-score { font-size: 26px; line-height: 1.3; font-weight: 500; color: var(--dsha-accent); }\n.dsha progress {\n  display: block; appearance: none; width: 100%; height: 5px; margin: 10px 0;\n  border: 0; border-radius: var(--dsw-radius-xs); overflow: hidden;\n  background: var(--dsw-alias-bg-skeleton); accent-color: var(--dsha-accent);\n}\n.dsha progress::-webkit-progress-bar { background: var(--dsw-alias-bg-skeleton); }\n.dsha progress::-webkit-progress-value { background: var(--dsha-accent); border-radius: var(--dsw-radius-xs); }\n.dsha progress::-moz-progress-bar { background: var(--dsha-accent); border-radius: var(--dsw-radius-xs); }\n.dsha-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0 22px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-status-dot { width: 6px; height: 6px; border-radius: 50%; corner-shape: round; background: var(--dsw-alias-state-success-primary); }\n.dsha-status[data-phase=partial] .dsha-status-dot, .dsha-status[data-phase=error] .dsha-status-dot { background: var(--dsw-alias-state-warn-primary); }\n.dsha-status[data-phase=importing] .dsha-status-dot { background: var(--dsha-accent); }\n.dsha-navigation { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin: 0 0 18px; }\n.dsha-collection { display: flex; align-items: center; gap: 7px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-collection svg { color: var(--dsha-accent); }\n.dsha-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }\n.dsha-stat { padding: 16px; border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); min-width: 0; }\n.dsha-stat-label { display: flex; align-items: center; gap: 7px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.5; }\n.dsha-stat-label svg { color: var(--dsha-accent); flex-shrink: 0; }\n.dsha-stat strong { display: block; font-size: 26px; line-height: 1.3; font-weight: 500; margin-top: 9px; overflow-wrap: anywhere; }\n.dsha-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 12px; }\n.dsha-section-heading h2, .dsha-chart h2 { font-size: 16px; line-height: 1.5; font-weight: 500; margin: 0; }\n.dsha-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }\n.dsha-card {\n  --dsha-medal-color: var(--dsw-alias-label-secondary);\n  display: flex; flex-direction: column; min-width: 0; padding: 20px;\n  border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg);\n  background: var(--dsw-alias-bg-layer-1);\n}\n.dsha-card[data-tier=silver] { --dsha-medal-color: var(--dsw-alias-label-deep-diving); }\n.dsha-card[data-tier=gold], .dsha-card[data-tier=legendary] { --dsha-medal-color: var(--dsw-alias-state-warn-primary); }\n.dsha-card[data-tier=platinum] { --dsha-medal-color: var(--dsha-accent); }\n.dsha-card[data-unlocked=true] { background: linear-gradient(135deg, color-mix(in srgb, var(--dsha-medal-color) 5%, var(--dsw-alias-bg-layer-1)), var(--dsw-alias-bg-layer-1) 65%); }\n.dsha-card-head { display: flex; align-items: center; gap: 14px; }\n.dsha-medal {\n  position: relative; display: grid; place-items: center; flex: 0 0 52px; height: 52px;\n  border-radius: 50%; corner-shape: round; color: var(--dsha-medal-color);\n  background: color-mix(in srgb, var(--dsha-medal-color) 8%, var(--dsw-alias-bg-layer-1));\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsha-medal-color) 22%, transparent), inset 0 0 0 5px var(--dsw-alias-bg-layer-1);\n}\n.dsha-card[data-tier=legendary] .dsha-medal { outline: 1px dashed var(--dsha-medal-color); outline-offset: 3px; }\n.dsha-card[data-tier=secret] .dsha-medal { border: 1px dashed var(--dsw-alias-border-l3); box-shadow: none; }\n.dsha-card[data-tier=platinum] .dsha-medal { outline: 1px solid var(--dsha-medal-color); outline-offset: 3px; }\n.dsha-medal-check { display: grid; place-items: center; position: absolute; right: -2px; bottom: 0; border-radius: 50%; corner-shape: round; color: var(--dsha-accent); background: var(--dsw-alias-bg-layer-1); }\n.dsha-card-heading { flex: 1; min-width: 0; }\n.dsha-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; line-height: 1.5; }\n.dsha-tier { color: var(--dsw-alias-label-secondary); }\n.dsha-xp { color: var(--dsw-alias-label-secondary); white-space: nowrap; }\n.dsha-card h3 { font-size: 16px; line-height: 1.5; font-weight: 500; margin: 3px 0 0; overflow-wrap: anywhere; }\n.dsha-card .dsha-card-description { color: var(--dsw-alias-label-secondary); margin: 16px 0; }\n.dsha-card-progress, .dsha-card-bottom { margin-top: auto; }\n.dsha-card-bottom { display: flex; align-items: center; gap: 7px; font-size: 12px; }\n.dsha-progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; line-height: 1.5; color: var(--dsw-alias-label-secondary); }\n.dsha-card[data-unlocked=true] .dsha-progress-label { color: var(--dsha-accent); }\n.dsha-requirements { display: grid; gap: 5px; font-size: 12px; line-height: 1.5; margin: 0; padding: 0; list-style: none; color: var(--dsw-alias-label-secondary); }\n.dsha-requirements li { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }\n.dsha-requirement-value { display: flex; align-items: center; gap: 4px; white-space: nowrap; }\n.dsha-requirements [data-complete=true] .dsha-requirement-value { color: var(--dsha-accent); }\n.dsha-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }\n.dsha-chart { padding: 20px; min-width: 0; border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg); background: var(--dsw-alias-bg-layer-1); }\n.dsha-chart-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }\n.dsha-chart-heading svg { color: var(--dsha-accent); flex-shrink: 0; }\n.dsha-tool-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 11px; }\n.dsha-tool-list li { display: flex; align-items: center; gap: 12px; }\n.dsha-tool-rank { font-size: 12px; color: var(--dsw-alias-label-secondary); }\n.dsha-tool-body { flex: 1; min-width: 0; }\n.dsha-list-row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 5px; }\n.dsha-list-row code { font-family: var(--ds-font-family-code); font-size: 12px; overflow-wrap: anywhere; }\n.dsha-track { height: 4px; border-radius: var(--dsw-radius-xs); background: var(--dsw-alias-bg-skeleton); overflow: hidden; }\n.dsha-track span { display: block; height: 100%; width: var(--dsha-fill); background: color-mix(in srgb, var(--dsha-accent) 65%, var(--dsw-alias-bg-layer-1)); border-radius: inherit; }\n.dsha-hours {\n  display: flex; align-items: stretch; gap: 4px; height: 150px; margin: 22px 0 8px;\n  background: repeating-linear-gradient(to top, var(--dsw-alias-border-l1) 0 .5px, transparent .5px 25%);\n}\n.dsha-hour-slot { display: flex; align-items: end; flex: 1; min-width: 0; border-radius: var(--dsw-radius-xs); }\n.dsha-hour { display: block; width: 100%; height: var(--dsha-height); min-height: 2px; background: color-mix(in srgb, var(--dsha-accent) 65%, var(--dsw-alias-bg-layer-1)); border-radius: var(--dsw-radius-xs) var(--dsw-radius-xs) 0 0; }\n.dsha-hour[data-empty=true] { background: var(--dsw-alias-border-l2); }\n.dsha-hour-slot:hover .dsha-hour, .dsha-hour-slot:focus-visible .dsha-hour { background: var(--dsha-accent); }\n.dsha-hours-labels { display: flex; justify-content: space-between; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; min-height: 160px; padding: 24px; text-align: center; color: var(--dsw-alias-label-secondary); }\n.dsha-empty svg { color: var(--dsha-accent); }\n.dsha-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 18px; }\n.dsha-filters label { display: grid; gap: 6px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-filters select { max-width: 100%; padding: 8px 12px; background: var(--dsw-alias-bg-layer-1); border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-sm); cursor: pointer; color: var(--dsw-alias-label-primary); }\n.dsha-filter-count { margin-left: auto; padding-bottom: 8px; font-size: 12px; }\n.dsha-footer { border-top: .5px solid var(--dsw-alias-border-l2); padding-top: 16px; margin-top: 24px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-footer summary { cursor: pointer; width: fit-content; }\n.dsha-footer p { margin-top: 10px; }\n.dsha-error { border-left: 3px solid var(--dsw-alias-state-warn-primary); padding: 8px 12px; margin: 12px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }\n.dsha-launcher { display: flex; align-items: center; gap: 6px; background: none; border: 0; color: var(--dsw-alias-label-secondary); padding: 5px; cursor: pointer; font: inherit; }\n.dsha-launcher-count { display: grid; place-items: center; min-width: 19px; height: 19px; padding: 0 5px; border-radius: var(--dsw-radius-sm); background: var(--dsw-alias-bg-skeleton); font-size: 11px; }\n.dsha-loading { min-height: 180px; display: grid; place-items: center; }\n.dsha-spinner { width: 22px; height: 22px; border: 2px solid var(--dsw-alias-border-l1); border-top-color: var(--dsw-alias-link); border-radius: 50%; corner-shape: round; animation: dsha-spin 1s linear infinite; }\n.dsha :is(button, select, summary, [tabindex]):focus-visible, .dsha-launcher:focus-visible { outline: 2px solid var(--dsw-alias-link); outline-offset: 3px; }\n@keyframes dsha-spin { to { transform: rotate(360deg); } }\n@media (max-width: 720px) {\n  .dsha-hero { flex-wrap: wrap; padding: 20px; gap: 16px; }\n  .dsha-level-detail { flex: 1 0 100%; }\n  .dsha-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }\n  .dsha-grid, .dsha-charts { grid-template-columns: 1fr; }\n  .dsha-navigation { align-items: flex-start; flex-direction: column; }\n}\n@media (max-width: 420px) {\n  .dsha-hero { padding: 16px; gap: 12px; }\n  .dsha-level-ring { flex-basis: 64px; width: 64px; height: 64px; }\n  .dsha-level-core { width: 54px; height: 54px; }\n  .dsha-level-core strong, .dsha-rank, .dsha-score { font-size: 22px; }\n  .dsha-card, .dsha-chart, .dsha-stat { padding: 14px; }\n  .dsha-card-head { gap: 10px; }\n  .dsha-filters label { flex: 1 1 120px; min-width: 0; }\n}\n@media (prefers-reduced-motion: reduce) { .dsha-spinner { animation: none; } }\n";
 
 // src/client.js
 var h = import_react.default.createElement;
 var NS = "dsh-achievements";
+var categoryIcons = {
+  journey: import_dsh_client_ui_primitives.IconBrowseOutlineRegular,
+  craft: import_dsh_client_ui_primitives.IconCodeOutlineRegular,
+  research: import_dsh_client_ui_primitives.IconSearchOutlineRegular,
+  orchestration: import_dsh_client_ui_primitives.IconBranchOutlineRegular,
+  skills: import_dsh_client_ui_primitives.IconSkillOutlineRegular,
+  mastery: import_dsh_client_ui_primitives.IconSparkleRegular
+};
+var statIcons = {
+  sessions: import_dsh_client_ui_primitives.IconNewChatOutlineRegular,
+  messages: import_dsh_client_ui_primitives.IconSendOutlineRegular,
+  successfulCalls: import_dsh_client_ui_primitives.IconCodeOutlineRegular,
+  tokens: import_dsh_client_ui_primitives.IconDataOutlineRegular,
+  steps: import_dsh_client_ui_primitives.IconChecklistOutlineRegular,
+  activeDays: import_dsh_client_ui_primitives.IconClockOutlineRegular,
+  goals: import_dsh_client_ui_primitives.IconGoalOutlineRegular,
+  workflows: import_dsh_client_ui_primitives.IconBranchOutlineRegular
+};
 var name = "dsh-achievements-client";
 var inject = ["slots", "locale", "connection"];
 function apply(ctx) {
@@ -1036,27 +1076,75 @@ function apply(ctx) {
     return import_react.default.useSyncExternalStore(dashboard.subscribe, dashboard.getSnapshot, dashboard.getSnapshot);
   }
   const fmt = (value) => new Intl.NumberFormat(locale.getLocale().active, { maximumFractionDigits: 1 }).format(value);
+  const percent = (value) => new Intl.NumberFormat(locale.getLocale().active, { style: "percent", maximumFractionDigits: 0 }).format(value < 1 ? Math.min(value, 0.99) : value);
   const metric = (key) => key.startsWith("tool.") ? key.slice(5) : t("metric." + key);
   function Card({ item, data }) {
     const unlocked = data.unlocked[item.id];
     const hidden = item.tier === "secret" && !unlocked;
     const progress = progressOf(item, data.stats);
-    const normal = achievements.filter((a) => !["secret", "platinum"].includes(a.tier));
-    const platinumCount = normal.filter((a) => data.unlocked[a.id]).length;
-    const fraction = item.tier === "platinum" ? platinumCount / normal.length : progress.fraction;
+    const publicItems = achievements.filter((a) => !["secret", "platinum"].includes(a.tier));
+    const platinumCount = publicItems.filter((a) => data.unlocked[a.id]).length;
+    const fraction = unlocked ? 1 : item.tier === "platinum" ? platinumCount / publicItems.length : progress.fraction;
+    const title = hidden ? t("secret") : t("achievement." + item.id + ".name");
+    const Icon = hidden ? import_dsh_client_ui_primitives.IconQuestionOutlineRegular : categoryIcons[item.category];
     return h(
       "article",
-      { className: "dsha-card", "data-unlocked": !!unlocked, "data-achievement-id": item.id },
-      h("div", { className: "dsha-card-top" }, t("tier." + item.tier), h("span", null, t("xp", { xp: item.points }))),
-      h("h3", null, hidden ? t("secret") : t("achievement." + item.id + ".name")),
-      h("p", { className: "dsha-muted" }, hidden ? t("secretHint") : t("achievement." + item.id + ".description")),
-      !hidden && h("progress", { max: 1, value: unlocked ? 1 : fraction, "aria-label": t("achievement." + item.id + ".name") }),
-      !hidden && !unlocked && h(
-        "ul",
-        { className: "dsha-requirements" },
-        progress.requirements.map((r) => h("li", { key: r.metric }, t("requirement", { metric: metric(r.metric), value: fmt(r.value), target: fmt(r.target) })))
+      {
+        className: "dsha-card",
+        "data-tier": item.tier,
+        "data-unlocked": !!unlocked,
+        "data-achievement-id": item.id
+      },
+      h(
+        "div",
+        { className: "dsha-card-head" },
+        h(
+          "div",
+          { className: "dsha-medal", "aria-hidden": true },
+          h(Icon, { size: 25 }),
+          unlocked && h("span", { className: "dsha-medal-check" }, h(import_dsh_client_ui_primitives.IconCheckCircleFillRegular, { size: 16 }))
+        ),
+        h(
+          "div",
+          { className: "dsha-card-heading" },
+          h(
+            "div",
+            { className: "dsha-card-top" },
+            h("span", { className: "dsha-tier" }, t("tier." + item.tier)),
+            h("span", { className: "dsha-xp" }, t("xp", { xp: item.points }))
+          ),
+          h("h3", null, title),
+          h("span", { className: "dsha-muted dsha-caption" }, t("category." + item.category))
+        )
       ),
-      unlocked && h("span", { className: "dsha-muted" }, t("earnedAt", { date: new Date(unlocked.at).toLocaleDateString(locale.getLocale().active) }))
+      h("p", { className: "dsha-card-description" }, hidden ? t("secretHint") : t("achievement." + item.id + ".description")),
+      hidden ? h("div", { className: "dsha-card-bottom dsha-muted" }, h(import_dsh_client_ui_primitives.IconQuestionOutlineRegular, { size: 14 }), t("secret")) : h(
+        "div",
+        { className: "dsha-card-progress" },
+        h(
+          "div",
+          { className: "dsha-progress-label" },
+          h("span", null, t(unlocked ? "completed" : "locked")),
+          h("span", null, percent(fraction))
+        ),
+        h("progress", { max: 1, value: fraction, "aria-label": title }),
+        !unlocked && (item.tier === "platinum" ? h("p", { className: "dsha-caption dsha-muted" }, t("publicProgress", { count: platinumCount, total: publicItems.length })) : h("ul", { className: "dsha-requirements" }, progress.requirements.map((r) => h(
+          "li",
+          { key: r.metric, "data-complete": r.value >= r.target },
+          h("span", null, metric(r.metric)),
+          h(
+            "span",
+            { className: "dsha-requirement-value" },
+            r.value >= r.target && h(import_dsh_client_ui_primitives.IconCheckOutlineRegular, { size: 12 }),
+            fmt(r.value) + " / " + fmt(r.target)
+          )
+        )))),
+        unlocked && h(
+          "p",
+          { className: "dsha-caption dsha-muted" },
+          t("earnedAt", { date: new Date(unlocked.at).toLocaleDateString(locale.getLocale().active) })
+        )
+      )
     );
   }
   function Hall({ data }) {
@@ -1064,10 +1152,15 @@ function apply(ctx) {
     const [category, setCategory] = import_react.default.useState("all");
     const [filter, setFilter] = import_react.default.useState("all");
     const level = playerLevel(data.unlocked);
-    const count = Object.keys(data.unlocked).filter((id) => achievements.some((a) => a.id === id)).length;
+    const count = achievements.filter((item) => data.unlocked[item.id]).length;
+    const levelFraction = level.next === null ? 1 : (level.xp - level.current) / (level.next - level.current);
     const publicNext = achievements.filter((item) => item.tier !== "secret" && item.tier !== "platinum" && !data.unlocked[item.id]).sort((a, b) => progressOf(b, data.stats).fraction - progressOf(a, data.stats).fraction).slice(0, 4);
     const cards = achievements.filter((item) => (category === "all" || item.category === category) && (filter === "all" || !!data.unlocked[item.id] === (filter === "unlocked")));
+    const toolEntries = Object.entries(data.stats.successfulTools).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxTool = Math.max(1, ...toolEntries.map(([, value]) => value));
+    const maxHour = Math.max(1, ...data.stats.hours);
     const status = data.status.phase === "importing" ? t("importing", { count: data.status.pending }) : data.status.phase === "partial" ? t("partial", { count: data.status.failed }) : data.status.phase === "error" ? t("offline") : t("ready");
+    const tabId = "dsha-view";
     return h(
       "div",
       { className: "dsha" },
@@ -1076,65 +1169,159 @@ function apply(ctx) {
         { className: "dsha-hero" },
         h(
           "div",
-          null,
-          h("div", { className: "dsha-kicker" }, t("level", { level: level.level })),
-          h("div", { className: "dsha-rank" }, t("rank." + level.level)),
-          h("div", { className: "dsha-muted" }, t("intro"))
+          { className: "dsha-level-ring", style: { "--dsha-progress": levelFraction * 360 + "deg" }, "aria-hidden": true },
+          h("div", { className: "dsha-level-core" }, h(import_dsh_client_ui_primitives.IconSparkleRegular, { size: 22 }), h("strong", null, level.level))
         ),
         h(
           "div",
-          null,
+          { className: "dsha-identity" },
+          h("div", { className: "dsha-kicker" }, t("level", { level: level.level })),
+          h("div", { className: "dsha-rank" }, t("rank." + level.level)),
+          h("p", { className: "dsha-muted" }, t("intro"))
+        ),
+        h(
+          "div",
+          { className: "dsha-level-detail" },
           h("div", { className: "dsha-score" }, t("xp", { xp: fmt(level.xp) })),
-          h("div", { className: "dsha-muted" }, level.next === null ? t("maxLevel") : t("nextLevel", { xp: level.next - level.xp }))
+          h("progress", { max: 1, value: levelFraction, "aria-label": t("levelProgress") }),
+          h("div", { className: "dsha-caption dsha-muted" }, level.next === null ? t("maxLevel") : t("nextLevel", { xp: fmt(level.next - level.xp) }))
         )
       ),
       h(
         "div",
-        { className: "dsha-status", role: "status" },
+        { className: "dsha-status", role: "status", "data-phase": data.status.phase },
+        h("span", { className: "dsha-status-dot", "aria-hidden": true }),
         status,
-        ["partial", "error"].includes(data.status.phase) && h("button", { className: "dsha-btn", onClick: () => {
+        ["partial", "error"].includes(data.status.phase) && h(import_dsh_client_ui_primitives.Button, { size: "sm", variant: "outline", onClick: () => {
           void dashboard.refresh(true);
         } }, t("retry"))
       ),
-      h("div", { className: "dsha-tabs" }, ["overview", "achievements"].map((id) => h("button", { key: id, className: "dsha-btn", "aria-pressed": tab === id, onClick: () => setTab(id) }, t(id)))),
-      h("p", { className: "dsha-muted" }, t("progress", { count, total: achievements.length })),
-      tab === "overview" ? h(
-        import_react.default.Fragment,
-        null,
-        h("div", { className: "dsha-stats" }, ["sessions", "messages", "successfulCalls", "tokens", "steps", "activeDays", "goals", "workflows"].map((key) => h("div", { key, className: "dsha-stat" }, h("strong", null, fmt(data.stats[key])), h("span", { className: "dsha-muted" }, t("metric." + key))))),
-        h("h2", { className: "dsha-section" }, t("paths")),
-        h("div", { className: "dsha-grid" }, publicNext.map((item) => h(Card, { key: item.id, item, data }))),
-        h("h2", { className: "dsha-section" }, t("toolUsage")),
-        h("div", { className: "dsha-list" }, Object.entries(data.stats.successfulTools).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([key, value]) => h("div", { key, className: "dsha-list-row" }, h("code", null, key), h("span", null, fmt(value))))),
-        h("h2", { className: "dsha-section" }, t("activity")),
-        h("div", { className: "dsha-hours" }, data.stats.hours.map((value, hour) => h("div", {
-          key: hour,
-          className: "dsha-hour",
-          style: { height: Math.max(2, value / Math.max(1, ...data.stats.hours) * 100) + "%" },
-          title: hour + ":00 \xB7 " + fmt(value)
-        }))),
-        h("div", { className: "dsha-hours-labels" }, [0, 6, 12, 18, 23].map((hour) => h("span", { key: hour }, hour + ":00")))
-      ) : h(
-        import_react.default.Fragment,
-        null,
+      h(
+        "div",
+        { className: "dsha-navigation" },
+        h(import_dsh_client_ui_primitives.SegmentedControl, {
+          id: tabId,
+          value: tab,
+          onChange: setTab,
+          label: t("title"),
+          options: ["overview", "achievements"].map((value) => ({ value, label: t(value) }))
+        }),
         h(
           "div",
-          { className: "dsha-filters" },
-          h(
-            "select",
-            { value: category, "aria-label": t("all"), onChange: (e) => setCategory(e.target.value) },
-            ["all", "journey", "craft", "research", "orchestration", "skills", "mastery"].map((id) => h("option", { key: id, value: id }, id === "all" ? t("all") : t("category." + id)))
-          ),
-          h(
-            "select",
-            { value: filter, "aria-label": t("allStatus"), onChange: (e) => setFilter(e.target.value) },
-            ["all", "locked", "unlocked"].map((id) => h("option", { key: id, value: id }, t(id === "all" ? "allStatus" : id)))
-          )
-        ),
-        h("div", { className: "dsha-grid" }, cards.map((item) => h(Card, { key: item.id, item, data })))
+          { className: "dsha-collection" },
+          h(import_dsh_client_ui_primitives.IconCheckCircleOutlineRegular, { size: 16 }),
+          h("span", null, t("progress", { count, total: achievements.length }))
+        )
       ),
-      h("details", { className: "dsha-footer" }, h("summary", null, t("rules")), h("p", null, t("rulesText")), h("p", null, t("coverage")), h("p", null, t("privacy"))),
-      h("p", { className: "dsha-muted" }, t("timezone", { zone: data.timeZone }))
+      h(
+        "div",
+        { id: tabId + "-" + tab + "-panel", role: "tabpanel", "aria-labelledby": tabId + "-" + tab },
+        tab === "overview" ? h(
+          import_react.default.Fragment,
+          null,
+          h("div", { className: "dsha-stats" }, Object.entries(statIcons).map(([key, Icon]) => h(
+            "div",
+            { key, className: "dsha-stat" },
+            h("div", { className: "dsha-stat-label" }, h(Icon, { size: 17 }), h("span", null, t("metric." + key))),
+            h("strong", null, fmt(data.stats[key]))
+          ))),
+          h(
+            "div",
+            { className: "dsha-section-heading" },
+            h("h2", null, t("paths")),
+            h(import_dsh_client_ui_primitives.Button, { size: "sm", onClick: () => setTab("achievements") }, t("viewAll"), h(import_dsh_client_ui_primitives.IconChevronRightOutlineRegular, { size: 14 }))
+          ),
+          publicNext.length ? h("div", { className: "dsha-grid" }, publicNext.map((item) => h(Card, { key: item.id, item, data }))) : h("div", { className: "dsha-empty" }, h(import_dsh_client_ui_primitives.IconCheckCircleOutlineRegular, { size: 26 }), h("p", null, t("allPublicComplete"))),
+          h(
+            "div",
+            { className: "dsha-charts" },
+            h(
+              "section",
+              { className: "dsha-chart" },
+              h("div", { className: "dsha-chart-heading" }, h(import_dsh_client_ui_primitives.IconCodeOutlineRegular, { size: 18 }), h("h2", null, t("toolUsage"))),
+              toolEntries.length ? h("ol", { className: "dsha-tool-list" }, toolEntries.map(([key, value], index) => h(
+                "li",
+                { key },
+                h("span", { className: "dsha-tool-rank", "aria-hidden": true }, String(index + 1).padStart(2, "0")),
+                h(
+                  "div",
+                  { className: "dsha-tool-body" },
+                  h("div", { className: "dsha-list-row" }, h("code", null, key), h("span", null, fmt(value))),
+                  h(
+                    "div",
+                    { className: "dsha-track", "aria-hidden": true },
+                    h("span", { style: { "--dsha-fill": value / maxTool * 100 + "%" } })
+                  )
+                )
+              ))) : h("div", { className: "dsha-empty" }, h(import_dsh_client_ui_primitives.IconCodeOutlineRegular, { size: 26 }), h("p", null, t("noTools")))
+            ),
+            h(
+              "section",
+              { className: "dsha-chart" },
+              h("div", { className: "dsha-chart-heading" }, h(import_dsh_client_ui_primitives.IconClockOutlineRegular, { size: 18 }), h("h2", null, t("activity"))),
+              h("p", { className: "dsha-caption dsha-muted" }, t("timezone", { zone: data.timeZone })),
+              data.stats.hours.some((value) => value > 0) ? h(
+                import_react.default.Fragment,
+                null,
+                h("div", { className: "dsha-hours", role: "list", "aria-label": t("activity") }, data.stats.hours.map((value, hour) => h(
+                  import_dsh_client_ui_primitives.Tooltip,
+                  { key: hour, portal: true, label: t("hourActivity", { hour, count: fmt(value) }) },
+                  h(
+                    "div",
+                    {
+                      className: "dsha-hour-slot",
+                      role: "listitem",
+                      tabIndex: 0,
+                      "aria-label": t("hourActivity", { hour, count: fmt(value) })
+                    },
+                    h("span", { className: "dsha-hour", style: { "--dsha-height": value / maxHour * 100 + "%" }, "data-empty": value === 0 })
+                  )
+                ))),
+                h("div", { className: "dsha-hours-labels", "aria-hidden": true }, [0, 6, 12, 18, 23].map((hour) => h("span", { key: hour }, hour + ":00")))
+              ) : h("div", { className: "dsha-empty" }, h(import_dsh_client_ui_primitives.IconClockOutlineRegular, { size: 26 }), h("p", null, t("noData")))
+            )
+          )
+        ) : h(
+          import_react.default.Fragment,
+          null,
+          h(
+            "div",
+            { className: "dsha-filters" },
+            h(
+              "label",
+              null,
+              h("span", null, t("pathLabel")),
+              h(
+                "select",
+                { value: category, "aria-label": t("pathLabel"), onChange: (e) => setCategory(e.target.value) },
+                ["all", "journey", "craft", "research", "orchestration", "skills", "mastery"].map((id) => h("option", { key: id, value: id }, id === "all" ? t("all") : t("category." + id)))
+              )
+            ),
+            h(
+              "label",
+              null,
+              h("span", null, t("statusLabel")),
+              h(
+                "select",
+                { value: filter, "aria-label": t("statusLabel"), onChange: (e) => setFilter(e.target.value) },
+                ["all", "locked", "unlocked"].map((id) => h("option", { key: id, value: id }, t(id === "all" ? "allStatus" : id)))
+              )
+            ),
+            h("span", { className: "dsha-filter-count dsha-muted", role: "status" }, t("resultCount", { count: cards.length }))
+          ),
+          cards.length ? h("div", { className: "dsha-grid" }, cards.map((item) => h(Card, { key: item.id, item, data }))) : h(
+            "div",
+            { className: "dsha-empty" },
+            h(import_dsh_client_ui_primitives.IconSearchOutlineRegular, { size: 26 }),
+            h("p", null, t("noMatches")),
+            h(import_dsh_client_ui_primitives.Button, { size: "sm", variant: "outline", onClick: () => {
+              setCategory("all");
+              setFilter("all");
+            } }, t("resetFilters"))
+          )
+        )
+      ),
+      h("details", { className: "dsha-footer" }, h("summary", null, t("rules")), h("p", null, t("rulesText")), h("p", null, t("coverage")), h("p", null, t("privacy")))
     );
   }
   function Overlay() {
@@ -1156,7 +1343,7 @@ function apply(ctx) {
           "div",
           { className: "dsha-error", role: "alert" },
           t("offline"),
-          h("button", { className: "dsha-btn", onClick: () => {
+          h(import_dsh_client_ui_primitives.Button, { size: "sm", variant: "outline", onClick: () => {
             void dashboard.refresh(true);
           } }, t("retry"))
         ),
@@ -1183,9 +1370,9 @@ function apply(ctx) {
       h(
         "button",
         { type: "button", className: "dsha-launcher", "aria-label": t("title"), onClick: () => dashboard.setOpen(true) },
-        h(import_dsh_client_ui_primitives.IconCheckCircleOutlineRegular, { size: 18 }),
+        h(import_dsh_client_ui_primitives.IconSparkleRegular, { size: 18 }),
         h("span", null, t("button")),
-        count > 0 && h("span", null, count)
+        count > 0 && h("span", { className: "dsha-launcher-count" }, count)
       )
     );
   }

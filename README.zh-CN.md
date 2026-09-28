@@ -4,28 +4,59 @@
 
 为 DeepSeek Harness 提供本地使用统计和 36 项成就。数据来自已保存的会话事件，成就鼓励实际使用 DSH 的不同功能，并显示下一项挑战的进度。
 
+## 效果预览
+
+以下截图使用中文界面与示例数据。
+
+### 数据统计
+
+查看会话、消息和输出 Token 统计，以及等级进度和下一项挑战。
+
+![数据总览：等级进度、使用统计与下一项挑战](docs/screenshots/statistics.png)
+
+### 成就记录
+
+查看成就徽章、解锁日期和挑战进度，并按成长路线与解锁状态筛选。
+
+![成就图鉴：已解锁徽章、解锁日期与挑战进度](docs/screenshots/achievements.png)
+
 ## 安装
 
 需要 DSH `0.1.7-rc.2`、Web profile，以及 Node `^22.19.0 || >=24`。DSH API 尚未稳定，其他版本需另行验证。
 
-下载 Release 中的安装包后运行：
+### 从 DSH 源码仓库运行
 
-```sh
-dsh plugin --profile web add ./local-dsh-achievements-0.2.0.tgz
-dsh --profile web
-```
-
-已运行的 DSH 需要重启 Host 并刷新网页。在侧栏点击**成就殿堂**。
-
-从 GitHub 源码安装：
+先按 DSH 的源码运行说明完成依赖安装和构建。以下命令都在 **deepseek-harness 仓库根目录**执行，不要切换到插件目录。已有 `dsh-achievements` 目录时跳过克隆。
 
 ```sh
 git clone https://github.com/oiuv/dsh-achievements.git
-dsh plugin --profile web add ./dsh-achievements
-dsh --profile web
+pnpm dsh plugin --profile web add ./dsh-achievements
+pnpm dsh web
 ```
 
-仓库包含构建好的 `client.js`，安装无需执行构建脚本。package.json 和 cordis.patch.yml 中的包名 `@local/dsh-achievements` 必须保持一致。卸载命令：`dsh plugin --profile web remove @local/dsh-achievements`。
+`pnpm dsh web` 是 `pnpm dsh --profile web` 的简写，两者启动同一个 Web profile。`pnpm` 用于运行 DSH 仓库中的启动器，不会选择另一套 profile。执行这两种命令时都应位于 DSH 仓库根目录。
+
+如果使用 Release 安装包，将其下载到 DSH 仓库根目录后运行：
+
+```sh
+pnpm dsh plugin --profile web add ./local-dsh-achievements-0.2.0.tgz
+pnpm dsh web
+```
+
+插件源码也可以放在 DSH 仓库外，在 `add` 后填写对应路径即可。仅把文件夹放入仓库不会自动启用插件；安装记录归属于 `$DSH_HOME/profiles/web/`。
+
+### 使用全局安装的 DSH CLI
+
+如果已经安装全局 CLI，且 PATH 中可以找到 `dsh`，则省略 `pnpm`。在包含插件目录的位置运行：
+
+```sh
+dsh plugin --profile web add ./dsh-achievements
+dsh web
+```
+
+已运行的 DSH 需要重启 Host 并刷新网页。在侧栏点击**成就**。殿堂使用当前 DSH 主题，显示等级进度、图形成就徽章、工具调用条形图和小时活跃分布。
+
+仓库包含构建好的 `client.js`，安装无需执行构建脚本。package.json 和 cordis.patch.yml 中的包名 `@local/dsh-achievements` 必须保持一致。源码运行时，在 DSH 仓库根目录用 `pnpm dsh plugin --profile web remove @local/dsh-achievements` 卸载；使用全局 CLI 时省略 `pnpm`。
 
 ## 统计与成就规则
 

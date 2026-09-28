@@ -697,11 +697,11 @@ export function progressOf(achievement, stats) {
 }
 /** XP comes only from unlocked achievements, never from repeatable token spending.
  * @param unlocked - Unlock records keyed by achievement ID.
- * @returns Earned XP, current level and the next level threshold or null.
+ * @returns Earned XP, current level, its XP threshold and the next threshold or null.
  */
 export function playerLevel(unlocked) {
   const xp = achievements.reduce((sum, item) => sum + (unlocked[item.id] ? item.points : 0), 0);
   const thresholds = [0,150,600,1500,2500,3500];
   const level = thresholds.filter(value => xp >= value).length;
-  return { xp, level, next: thresholds[level] ?? null };
+  return { xp, level, current: thresholds[level - 1], next: thresholds[level] ?? null };
 }

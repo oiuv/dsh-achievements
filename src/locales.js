@@ -1,6 +1,13 @@
 /** Flat dictionaries registered with DSH Locale; English and Chinese share the same keys. */
 import { achievements } from './catalog.js';
 const en = {
+  levelProgress: 'Progress to the next level', viewAll: 'View all',
+  publicProgress: '{count} / {total} public achievements',
+  noTools: 'Your successful tool calls will appear here.',
+  allPublicComplete: 'All public challenges complete. Your platinum badge is waiting in the collection.',
+  pathLabel: 'Path', statusLabel: 'Progress', resultCount: '{count} achievements',
+  noMatches: 'No achievements match these filters.', resetFilters: 'Reset filters',
+  hourActivity: '{hour}:00 · {count} user messages',
   title: 'DSH Achievement Hall', button: 'Achievements', close: 'Close',
   intro: 'Build useful habits. Explore more of DSH. Make the work count.',
   overview: 'Overview', achievements: 'Achievements', all: 'All paths', locked: 'In progress', unlocked: 'Unlocked',
@@ -31,6 +38,13 @@ const en = {
   'metric.archiveSessions':'History→research sessions','metric.methodSessions':'Methodical sessions','metric.relaySessions':'Relay sessions',
 };
 const zh = {
+  levelProgress: '升往下一级的进度', viewAll: '查看全部',
+  publicProgress: '公开成就 {count} / {total}',
+  noTools: '成功使用工具后，这里会显示调用分布',
+  allPublicComplete: '公开挑战已全部完成，前往图鉴查看你的白金成就',
+  pathLabel: '成长路线', statusLabel: '解锁状态', resultCount: '{count} 项成就',
+  noMatches: '没有符合筛选条件的成就', resetFilters: '重置筛选',
+  hourActivity: '{hour}:00 · {count} 条用户消息',
   title:'DSH 成就殿堂',button:'成就',close:'关闭',intro:'把开发练成技艺，让每一次探索留下足迹',
   overview:'数据总览',achievements:'成就图鉴',all:'全部路线',locked:'进行中',unlocked:'已解锁',allStatus:'全部进度',
   secret:'隐藏挑战',secretHint:'探索不同能力的组合，揭开这个挑战的面纱',
