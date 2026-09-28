@@ -69,7 +69,7 @@ The repository includes the built `client.js`; installation does not run a build
 - Planning requires an unfinished todo snapshot before at least five other tool calls. Checklist completion requires at least three items whose text and order stay unchanged; the plugin hashes their text instead of storing it. Whole-list snapshots never count as new individual tasks.
 - File deliveries come from non-empty `deliverables/presented` events, deduplicated by call ID within the session. Repeated presentations of a file are delivery records, not distinct works. Coverage challenges count main sessions containing the required activity, not unrelated sessions.
 - Standard delegation tools include `subagent`, `subagent_fork`, `subagent_codex` and `subagent_claude_code`. Collaborative delivery requires a parent-owned child catalog entry and a recorded child turn completion within the parent turn, before delivery by log time. Starting a background child alone earns no delivery credit.
-- Workflows require paired start/end records with a completed stop reason. Member challenges also require all recorded members to complete; phase challenges count named phases. Recovery requires a new same-name run started after the failed run ended. Goals count completed goal IDs; these are recorded lifecycle states, not independent quality assessments.
+- Workflows require paired start/end records with a completed stop reason. Member challenges also require all recorded members to complete; phase challenges count named phases. Goals count completed goal IDs; these are recorded lifecycle states, not independent quality assessments.
 - Terminal challenges match the terminal ID across successful send → read → close calls. Feature groups recognize shipped tool names; arbitrary renames remain in usage totals without inferred capability credit. Optional specialties require their corresponding DSH tools.
 - History imports silently. Unlock dates record detection time, not the original event date. Current-format counters survive restarts and source-log deletion. The configured timezone determines calendar dates; changing it requires a fresh database.
 
@@ -77,13 +77,9 @@ Statistics follow persistence flushes and polling rather than every live streami
 
 ## Achievements and levels
 
-The 72 public achievements consist of 24 core challenges, 47 specialties and one platinum award. Platinum requires the 24 core first unlocks; specialties, hidden challenges and achievement upgrades do not block it. Filter the collection by capability path, difficulty, collection or unlock state. Specialties cover PTC composition, completed child responses, workflow members and phases, Skills, terminals, semantic tools, browser tools and MCP resources.
+The 72 public achievements include 24 core challenges, 47 specialties and one platinum award, alongside nine hidden challenges. First-unlock XP determines player level; 19 cumulative achievements have independent upgrade levels. Filter the collection by capability path, difficulty, collection or unlock state.
 
-Apprentice challenges introduce the first recorded action. Practitioner and expert challenges combine capabilities and repeated practice. Legendary challenges include eight-child collaboration, multi-phase workflows, 1000 completed development turns and activity across 365 dates. The nine hidden challenges conceal their names and conditions until unlocked.
-
-Only 19 explicitly marked cumulative achievements can level up. At the base target they reach Lv. 1; every doubling adds one level. For example, the recorded-output-token achievement reaches Lv. 1 at 1 million, Lv. 2 at 2 million and Lv. 3 at 4 million, then shows 8 million as the next target. Levels are derived from persisted totals and survive replay and restart. First experiences, single-run records, capability diversity, day streaks, secrets and platinum do not level up.
-
-Player level is separate from achievement level. First unlocks award XP once; repeated achievement levels neither award more player XP nor increase the number of unlocked achievements. Two core apprentice awards reach player level 2. All public first unlocks can reach the highest player level without secrets.
+See [Player levels and public achievements](docs/levels-and-achievements.md) for the complete player-level table, XP rewards, upgrade rules and public catalog. The reference reveals no hidden achievement names, requirements or hints.
 
 ## Configuration and data
 
