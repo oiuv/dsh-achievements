@@ -9,7 +9,7 @@ import {
   IconDataOutlineRegular, IconChecklistOutlineRegular, IconClockOutlineRegular,
   IconGoalOutlineRegular, IconQuestionOutlineRegular, IconChevronRightOutlineRegular,
 } from '@deepseek-ai/dsh-client-ui-primitives';
-import { achievements, playerLevel, progressOf } from './catalog.js';
+import { achievements, coreAchievements, playerLevel, progressOf, achievementLevel } from './catalog.js';
 import { dictionaries } from './locales.js';
 import { createDashboard } from './client-state.js';
 import css from './client.css';
@@ -17,12 +17,13 @@ const h = React.createElement;
 const NS = 'dsh-achievements';
 const categoryIcons = {
   journey: IconBrowseOutlineRegular, craft: IconCodeOutlineRegular, research: IconSearchOutlineRegular,
-  orchestration: IconBranchOutlineRegular, skills: IconSkillOutlineRegular, mastery: IconSparkleRegular,
+  orchestration: IconBranchOutlineRegular, skills: IconSkillOutlineRegular, automation: IconCodeOutlineRegular, mastery: IconSparkleRegular,
 };
 const statIcons = {
-  sessions: IconNewChatOutlineRegular, messages: IconSendOutlineRegular, successfulCalls: IconCodeOutlineRegular,
-  tokens: IconDataOutlineRegular, steps: IconChecklistOutlineRegular, activeDays: IconClockOutlineRegular,
-  goals: IconGoalOutlineRegular, workflows: IconBranchOutlineRegular,
+  sessions: IconNewChatOutlineRegular, subagent: IconBranchOutlineRegular, successfulCalls: IconCodeOutlineRegular,
+  tokens: IconDataOutlineRegular, completedTurns: IconChecklistOutlineRegular, activeDays: IconClockOutlineRegular,
+  buildLoops: IconCodeOutlineRegular, deliveries: IconSendOutlineRegular, goals: IconGoalOutlineRegular,
+  workflows: IconBranchOutlineRegular, ptcPrograms: IconCodeOutlineRegular, collaborationTurns: IconBranchOutlineRegular,
 };
 
 export const name = 'dsh-achievements-client';
@@ -75,33 +76,39 @@ export function apply(ctx) {
     const unlocked = data.unlocked[item.id];
     const hidden = item.tier === 'secret' && !unlocked;
     const progress = progressOf(item, data.stats);
-    const publicItems = achievements.filter(a => !['secret', 'platinum'].includes(a.tier));
+    const publicItems = coreAchievements;
+    const advancement = achievementLevel(item, data.stats);
+    const upgrading = !!unlocked && advancement !== null;
+    const requirements = upgrading ? [advancement] : progress.requirements;
     const platinumCount = publicItems.filter(a => data.unlocked[a.id]).length;
-    const fraction = unlocked ? 1 : item.tier === 'platinum' ? platinumCount / publicItems.length : progress.fraction;
+    const fraction = upgrading ? advancement.fraction : unlocked ? 1 : item.tier === 'platinum' ? platinumCount / publicItems.length : progress.fraction;
     const title = hidden ? t('secret') : t('achievement.' + item.id + '.name');
     const Icon = hidden ? IconQuestionOutlineRegular : categoryIcons[item.category];
     return h('article', {
       className: 'dsha-card', 'data-tier': item.tier, 'data-unlocked': !!unlocked, 'data-achievement-id': item.id,
+      'data-achievement-level': upgrading ? advancement.level : undefined,
     },
       h('div', { className: 'dsha-card-head' },
         h('div', { className: 'dsha-medal', 'aria-hidden': true }, h(Icon, { size: 25 }),
           unlocked && h('span', { className: 'dsha-medal-check' }, h(IconCheckCircleFillRegular, { size: 16 }))),
         h('div', { className: 'dsha-card-heading' },
           h('div', { className: 'dsha-card-top' },
-            h('span', { className: 'dsha-tier' }, t('tier.' + item.tier)),
+            h('span', { className: 'dsha-tier' }, t('tier.' + item.tier),
+              item.upgrade && h('span', { className: 'dsha-achievement-level' },
+                upgrading ? t('achievementLevel', { level: advancement.level }) : t('upgradeable'))),
             h('span', { className: 'dsha-xp' }, t('xp', { xp: item.points }))),
           h('h3', null, title),
-          h('span', { className: 'dsha-muted dsha-caption' }, t('category.' + item.category)))),
+          h('span', { className: 'dsha-muted dsha-caption' }, t('category.' + item.category) + ' · ' + t('track.' + item.track)))),
       h('p', { className: 'dsha-card-description' }, hidden ? t('secretHint') : t('achievement.' + item.id + '.description')),
       hidden ? h('div', { className: 'dsha-card-bottom dsha-muted' }, h(IconQuestionOutlineRegular, { size: 14 }), t('secret'))
         : h('div', { className: 'dsha-card-progress' },
           h('div', { className: 'dsha-progress-label' },
-            h('span', null, t(unlocked ? 'completed' : 'locked')),
+            h('span', null, upgrading ? t('nextAchievementLevel', { level: advancement.level + 1 }) : t(unlocked ? 'completed' : 'locked')),
             h('span', null, percent(fraction))),
           h('progress', { max: 1, value: fraction, 'aria-label': title }),
-          !unlocked && (item.tier === 'platinum'
+          (!unlocked || upgrading) && (item.tier === 'platinum'
             ? h('p', { className: 'dsha-caption dsha-muted' }, t('publicProgress', { count: platinumCount, total: publicItems.length }))
-            : h('ul', { className: 'dsha-requirements' }, progress.requirements.map(r =>
+            : h('ul', { className: 'dsha-requirements' }, requirements.map(r =>
               h('li', { key: r.metric, 'data-complete': r.value >= r.target },
                 h('span', null, metric(r.metric)),
                 h('span', { className: 'dsha-requirement-value' },
@@ -116,13 +123,16 @@ export function apply(ctx) {
     const [tab, setTab] = React.useState('overview');
     const [category, setCategory] = React.useState('all');
     const [filter, setFilter] = React.useState('all');
+    const [track, setTrack] = React.useState('all');
+    const [tier, setTier] = React.useState('all');
     const level = playerLevel(data.unlocked);
     const count = achievements.filter(item => data.unlocked[item.id]).length;
     const levelFraction = level.next === null ? 1 : (level.xp - level.current) / (level.next - level.current);
-    const publicNext = achievements.filter(item => item.tier !== 'secret' && item.tier !== 'platinum' && !data.unlocked[item.id])
-      .sort((a, b) => progressOf(b, data.stats).fraction - progressOf(a, data.stats).fraction).slice(0, 4);
+    const publicNext = achievements.filter(item => item.tier !== 'secret' && item.tier !== 'platinum' && (!data.unlocked[item.id] || item.upgrade))
+      .sort((a, b) => (achievementLevel(b, data.stats) ?? progressOf(b, data.stats)).fraction - (achievementLevel(a, data.stats) ?? progressOf(a, data.stats)).fraction).slice(0, 4);
     const cards = achievements.filter(item => (category === 'all' || item.category === category)
-      && (filter === 'all' || !!data.unlocked[item.id] === (filter === 'unlocked')));
+      && (track === 'all' || item.track === track) && (tier === 'all' || item.tier === tier)
+      && (filter === 'all' || (filter === 'upgradeable' ? item.upgrade : !!data.unlocked[item.id] === (filter === 'unlocked'))));
     const toolEntries = Object.entries(data.stats.successfulTools).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const maxTool = Math.max(1, ...toolEntries.map(([, value]) => value));
     const maxHour = Math.max(1, ...data.stats.hours);
@@ -156,6 +166,7 @@ export function apply(ctx) {
             h('div', { key, className: 'dsha-stat' },
               h('div', { className: 'dsha-stat-label' }, h(Icon, { size: 17 }), h('span', null, t('metric.' + key))),
               h('strong', null, fmt(data.stats[key]))))),
+          data.stats.missingUsage > 0 && h('p', { className: 'dsha-caption dsha-muted dsha-usage-note' }, t('missingUsage', { count: fmt(data.stats.missingUsage) })),
           h('div', { className: 'dsha-section-heading' }, h('h2', null, t('paths')),
             h(Button, { size: 'sm', onClick: () => setTab('achievements') }, t('viewAll'), h(IconChevronRightOutlineRegular, { size: 14 }))),
           publicNext.length ? h('div', { className: 'dsha-grid' }, publicNext.map(item => h(Card, { key: item.id, item, data })))
@@ -186,16 +197,28 @@ export function apply(ctx) {
           h('div', { className: 'dsha-filters' },
             h('label', null, h('span', null, t('pathLabel')),
               h('select', { value: category, 'aria-label': t('pathLabel'), onChange: e => setCategory(e.target.value) },
-                ['all', 'journey', 'craft', 'research', 'orchestration', 'skills', 'mastery'].map(id =>
+                ['all', 'journey', 'craft', 'research', 'orchestration', 'skills', 'automation', 'mastery'].map(id =>
                   h('option', { key: id, value: id }, id === 'all' ? t('all') : t('category.' + id))))),
+            h('label', null, h('span', null, t('collectionLabel')),
+              h('select', { value: track, 'aria-label': t('collectionLabel'), onChange: e => setTrack(e.target.value) },
+                ['all', 'core', 'specialty', 'secret'].map(id => h('option', { key: id, value: id }, t(id === 'all' ? 'allCollections' : 'track.' + id))))),
+            h('label', null, h('span', null, t('difficultyLabel')),
+              h('select', { value: tier, 'aria-label': t('difficultyLabel'), onChange: e => setTier(e.target.value) },
+                ['all', 'bronze', 'silver', 'gold', 'legendary', 'secret', 'platinum'].map(id =>
+                  h('option', { key: id, value: id }, t(id === 'all' ? 'allDifficulties' : 'tier.' + id))))),
             h('label', null, h('span', null, t('statusLabel')),
               h('select', { value: filter, 'aria-label': t('statusLabel'), onChange: e => setFilter(e.target.value) },
-                ['all', 'locked', 'unlocked'].map(id => h('option', { key: id, value: id }, t(id === 'all' ? 'allStatus' : id))))),
+                ['all', 'locked', 'unlocked', 'upgradeable'].map(id => h('option', { key: id, value: id }, t(id === 'all' ? 'allStatus' : id))))),
             h('span', { className: 'dsha-filter-count dsha-muted', role: 'status' }, t('resultCount', { count: cards.length }))),
           cards.length ? h('div', { className: 'dsha-grid' }, cards.map(item => h(Card, { key: item.id, item, data })))
             : h('div', { className: 'dsha-empty' }, h(IconSearchOutlineRegular, { size: 26 }), h('p', null, t('noMatches')),
-              h(Button, { size: 'sm', variant: 'outline', onClick: () => { setCategory('all'); setFilter('all'); } }, t('resetFilters'))))),
-      h('details', { className: 'dsha-footer' }, h('summary', null, t('rules')), h('p', null, t('rulesText')), h('p', null, t('coverage')), h('p', null, t('privacy'))),
+              h(Button, { size: 'sm', variant: 'outline', onClick: () => { setCategory('all'); setFilter('all'); setTrack('all'); setTier('all'); } }, t('resetFilters'))))),
+      h('p', { className: 'dsha-caption dsha-muted dsha-collection-hint' }, t('collectionHint', {
+        public: achievements.filter(item => item.tier !== 'secret').length,
+        secret: achievements.filter(item => item.tier === 'secret').length,
+        upgradeable: achievements.filter(item => item.upgrade).length,
+      })),
+      h('details', { className: 'dsha-footer' }, h('summary', null, t('rules')), h('p', null, t('rulesText')), h('p', null, t('levelRules')), h('p', null, t('coverage')), h('p', null, t('privacy'))),
     );
   }
 

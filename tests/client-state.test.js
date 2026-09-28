@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createDashboard } from '../src/client-state.js';
-const snapshot=(unlocked={},phase='ready')=>({schemaVersion:1,stats:{hours:Array(24).fill(0)},unlocked,status:{phase},pollMs:3000});
+const snapshot=(unlocked={},phase='ready')=>({schemaVersion:2,stats:{hours:Array(24).fill(0)},unlocked,status:{phase},pollMs:3000});
 test('history import is silent, new unlocks notify once and polling preserves toast identity',async t=>{
   let response=snapshot({},'importing'),scheduled=0,errors=0;
   const dashboard=createDashboard({fetchSnapshot:async()=>response,schedule:()=>++scheduled,cancel:()=>{},onError:()=>errors++});
@@ -22,7 +22,7 @@ test('synchronous request errors can recover and malformed responses retain last
   await dashboard.refresh();assert.equal(dashboard.getSnapshot().error,true);
   fail=false;await dashboard.refresh();assert.equal(dashboard.getSnapshot().error,false);
   response={};await dashboard.refresh();assert.equal(dashboard.getSnapshot().error,true);
-  assert.equal(dashboard.getSnapshot().data.schemaVersion,1);
+  assert.equal(dashboard.getSnapshot().data.schemaVersion,2);
 });
 test('dispose cancels the active request and awaits it without notifying or rescheduling',async()=>{
   let ready,notify=0,schedules=0;

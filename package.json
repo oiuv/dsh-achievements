@@ -16,6 +16,7 @@
     "client.js",
     "cordis.patch.yml",
     "src/engine.js",
+    "src/events.js",
     "src/collector.js",
     "src/catalog.js",
     "docs/screenshots",

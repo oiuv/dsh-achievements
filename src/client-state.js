@@ -16,7 +16,7 @@ export function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel =
       try {
         const data = await fetchSnapshot(lifetime.signal, retry);
         if (stopped) return;
-        if (data?.schemaVersion !== 1 || !data.stats || !data.unlocked || !data.status
+        if (data?.schemaVersion !== 2 || !data.stats || !data.unlocked || !data.status
           || !Array.isArray(data.stats.hours) || data.stats.hours.length !== 24
           || !Number.isFinite(data.pollMs) || data.pollMs < 1000) throw new Error('Invalid achievements response');
         const ids = Object.keys(data.unlocked);

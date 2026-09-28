@@ -1,6 +1,5 @@
 /** DSH Achievement Hall Host: read-only session accounting and authenticated dashboard API. */
 import z from '@deepseek-ai/schemastery';
-import { assistantStreamFirstTokenTime } from '@deepseek-ai/dsh-llm';
 import { isAbsolute } from 'node:path';
 import { AchievementStore, calendar } from './src/engine.js';
 import { createCollector } from './src/collector.js';
@@ -25,7 +24,6 @@ export async function apply(ctx, config) {
   await ctx.effect(async () => {
     const store = new AchievementStore(config.database, {
       timeZone: config.timeZone, busyTimeoutMs: config.busyTimeoutMs,
-      firstTokenTime: assistantStreamFirstTokenTime,
     });
     let collector, unregister;
     try {

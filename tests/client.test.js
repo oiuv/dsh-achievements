@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { aggregate } from '../src/engine.js';
 import { achievements } from '../src/catalog.js';
 
-for(const scenario of ['empty','populated','near-complete']) for(const language of ['en','zh']) test('built client renders localized Hall and disposes effects: '+scenario+' '+language,async t=>{
+for(const scenario of ['empty','populated','near-complete','leveled']) for(const language of ['en','zh']) test('built client renders localized Hall and disposes effects: '+scenario+' '+language,async t=>{
   let registration,table,launcherButton;
   const components=new Map(),styles=new Set(),removed=[],disposers=[];
   const localeSnapshot={active:language,locales:['en','zh'],revision:0};
@@ -16,21 +16,29 @@ for(const scenario of ['empty','populated','near-complete']) for(const language 
     bind(){return(key,args={})=>{assert.ok(table[language][key],'Missing locale key '+key);return table[language][key].replace(/\{(\w+)\}/g,(_,name)=>String(args[name]));};},
     getLocale:()=>localeSnapshot,subscribe:()=>()=>{},
   };
-  const data={schemaVersion:1,stats:aggregate([],{timeZone:'UTC',now:0}),unlocked:{},timeZone:'UTC',updatedAt:0,status:{phase:'ready',failed:0},pollMs:60000};
+  const data={schemaVersion:2,stats:aggregate([],{timeZone:'UTC',now:0}),unlocked:{},timeZone:'UTC',updatedAt:0,status:{phase:'ready',failed:0},pollMs:60000};
   if (scenario === 'populated') {
     Object.assign(data.stats, {
       sessions: 42, messages: 186, successfulCalls: 732, tokens: 128400, steps: 280, activeDays: 12,
-      goals: 3, workflows: 2, buildLoops: 3, researchLoops: 2, plannedSessions: 4,
+      goals: 3, workflows: 2, buildLoops: 3, researchLoops: 2, plannedTurns: 4,
+      deliveries: 8, subagent: 12, completedTurns: 72, ptcPrograms: 5, collaborationTurns: 2,
       successfulTools: { read: 284, edit: 192, pwsh: 126, grep: 86, web_search: 44 },
       hours: [0,0,0,0,0,0,1,3,8,18,24,16,7,10,22,28,16,9,6,4,3,1,0,0],
     });
     for (const item of achievements.slice(0, 4)) data.unlocked[item.id] = { at: Date.parse('2026-09-20T12:00:00Z') };
   }
   if (scenario === 'near-complete') {
-    Object.assign(data.stats, { successfulCalls: 2999, activeDays: 30, successfulTools: { present: 50 } });
+    for (const item of achievements) for (const [metric, target] of item.requirements) {
+      if (!metric.startsWith('tool.')) data.stats[metric] = Math.max(data.stats[metric], target);
+    }
+    data.stats.successfulCalls = 2999;
     for (const item of achievements.filter(item => item.id !== 'reliable')) {
       data.unlocked[item.id] = { at: Date.parse('2026-09-20T12:00:00Z') };
     }
+  }
+  if (scenario === 'leveled') {
+    data.stats.tokens = 4000000;
+    data.unlocked['token-scribe'] = { at: Date.parse('2026-09-20T12:00:00Z') };
   }
   const primitives={
     Modal:({open,title,children})=>open?React.createElement('section',{'aria-label':title},children):null,
@@ -71,8 +79,8 @@ for(const scenario of ['empty','populated','near-complete']) for(const language 
   launcherButton.props.onClick();
   const html=renderToStaticMarkup(React.createElement(overlay));
   assert.ok(html.includes(language==='zh'?'DSH 成就殿堂':'DSH Achievement Hall'));
-  assert.ok(html.includes((scenario === 'empty' ? '0' : scenario === 'populated' ? '4' : '35') + ' / 36'));
-  if (scenario === 'empty') assert.ok(html.includes(language === 'zh' ? '成功使用工具后' : 'Your successful tool calls'));
+  assert.ok(html.includes(Object.keys(data.unlocked).length + ' / 81'));
+  if (scenario === 'empty') assert.ok(html.includes(language === 'zh' ? '工具返回后' : 'Your non-error tool returns'));
   else if (scenario === 'populated') {
     assert.equal((html.match(/class="dsha-hour-slot"/g)||[]).length,24);
     assert.ok(html.includes('128,400'));
@@ -84,11 +92,17 @@ for(const scenario of ['empty','populated','near-complete']) for(const language 
     assert.ok(card.includes('<span>99%</span>'), 'Incomplete requirements must not display 100%');
     assert.ok(card.includes('2,999 / 3,000'));
   }
+  if (scenario === 'leveled') {
+    const card = html.match(/<article[^>]*data-achievement-id="token-scribe"[\s\S]*?<\/article>/)?.[0];
+    assert.ok(card.includes('data-achievement-level="3"'));
+    assert.ok(card.includes('Lv. 3')); assert.ok(card.includes('Lv. 4'));
+    assert.ok(card.includes('4,000,000 / 8,000,000'));
+  }
   assert.equal(html.includes('{count}'),false);assert.equal(html.includes('NaN'),false);
   const expected = new URL('./expected/hall.'+(scenario === 'empty' ? '' : scenario+'.')+language+'.html', import.meta.url);
   if (process.env.DSH_ACHIEVEMENTS_UPDATE_EXPECTED === '1') writeFileSync(expected, html+'\n');
   assert.equal(html+'\n', readFileSync(expected,'utf8'));
-  assert.equal((html.match(/data-achievement-id=/g)||[]).length,scenario === 'near-complete' ? 1 : 4);
+  assert.equal((html.match(/data-achievement-id=/g)||[]).length,4);
   assert.deepEqual(removed,['dsh-ach-s-v4','dsh-ach-u-v2']);
   for(const dispose of disposers.splice(0).reverse())await dispose();
   assert.equal(styles.size,0);assert.equal(components.size,0);assert.equal(table,null);

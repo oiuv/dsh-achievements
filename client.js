@@ -42,693 +42,107 @@ var import_react = __toESM(require("react"), 1);
 var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // src/catalog.js
-var rows = [
-  [
-    "first-loop",
-    "journey",
-    "bronze",
-    "\u5F00\u53D1\u8005\u4E0A\u7EBF",
-    "Developer online",
-    "\u5728\u540C\u4E00\u4F1A\u8BDD\u4F9D\u6B21\u6210\u529F\u8BFB\u53D6\u6587\u4EF6\u3001\u4FEE\u6539\u6587\u4EF6\u3001\u8FD0\u884C\u547D\u4EE4",
-    "Read a file, modify a file, then run a command successfully in one session",
-    [
-      [
-        "buildLoops",
-        1
-      ]
-    ]
-  ],
-  [
-    "first-plan",
-    "journey",
-    "bronze",
-    "\u6709\u5907\u800C\u6765",
-    "Prepared",
-    "\u5728\u4E00\u4E2A\u4F1A\u8BDD\u4F7F\u7528\u5F85\u529E\u5DE5\u5177\uFF0C\u5E76\u6210\u529F\u5B8C\u6210\u81F3\u5C11 5 \u6B21\u5DE5\u5177\u8C03\u7528",
-    "Use todos and finish at least 5 successful tool calls in one session",
-    [
-      [
-        "plannedSessions",
-        1
-      ]
-    ]
-  ],
-  [
-    "first-research",
-    "journey",
-    "bronze",
-    "\u67E5\u8BC1\u4E4B\u540E",
-    "Check the source",
-    "\u540C\u4E00\u4F1A\u8BDD\u4F9D\u6B21\u6210\u529F\u641C\u7D22\u7F51\u9875\u3001\u8BFB\u53D6\u7F51\u9875\u3001\u5199\u5165\u6587\u4EF6\u6216\u5C55\u793A\u4EA4\u4ED8\u7269",
-    "Search the web, fetch a page, then write a file or present an artifact in one session",
-    [
-      [
-        "researchLoops",
-        1
-      ]
-    ]
-  ],
-  [
-    "first-skill",
-    "journey",
-    "bronze",
-    "\u5B66\u4EE5\u81F4\u7528",
-    "Put it to work",
-    "\u52A0\u8F7D Skill \u540E\uFF0C\u5728\u540C\u4E00\u4F1A\u8BDD\u6210\u529F\u4FEE\u6539\u6587\u4EF6\u6216\u8FD0\u884C\u547D\u4EE4",
-    "Load a Skill, then modify a file or run a command in the same session",
-    [
-      [
-        "skillSessions",
-        1
-      ]
-    ]
-  ],
-  [
-    "craft-5",
-    "craft",
-    "silver",
-    "\u5C0F\u6B65\u4EA4\u4ED8",
-    "Small iterations",
-    "\u5B8C\u6210 5 \u4E2A\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u4F1A\u8BDD\uFF0C\u5E76\u5728 3 \u4E2A\u65E5\u671F\u53D1\u9001\u8FC7\u6D88\u606F",
-    "Complete 5 read\u2192modify\u2192command sessions; send messages on 3 dates",
-    [
-      [
-        "buildLoops",
-        5
-      ],
-      [
-        "activeDays",
-        3
-      ]
-    ]
-  ],
-  [
-    "search-map",
-    "craft",
-    "silver",
-    "\u4EE3\u7801\u5BFC\u822A\u5458",
-    "Code navigator",
-    "\u6210\u529F\u4F7F\u7528 grep 50 \u6B21\u3001glob 30 \u6B21\uFF0C\u8986\u76D6\u81F3\u5C11 10 \u4E2A\u6D3B\u8DC3\u4F1A\u8BDD",
-    "Succeed with grep 50 times and glob 30 times across at least 10 active sessions",
-    [
-      [
-        "tool.grep",
-        50
-      ],
-      [
-        "tool.glob",
-        30
-      ],
-      [
-        "sessions",
-        10
-      ]
-    ]
-  ],
-  [
-    "lsp",
-    "craft",
-    "silver",
-    "\u8BED\u4E49\u89C6\u91CE",
-    "Semantic vision",
-    "\u6210\u529F\u4F7F\u7528 LSP 25 \u6B21\uFF0C\u5E76\u5728 5 \u4E2A\u65E5\u671F\u53D1\u9001\u8FC7\u6D88\u606F",
-    "Use LSP successfully 25 times; send messages on 5 dates",
-    [
-      [
-        "tool.lsp",
-        25
-      ],
-      [
-        "activeDays",
-        5
-      ]
-    ]
-  ],
-  [
-    "terminal",
-    "craft",
-    "silver",
-    "\u7EC8\u7AEF\u638C\u8235",
-    "Terminal pilot",
-    "\u5728 5 \u4E2A\u4E0D\u540C\u4F1A\u8BDD\u5B8C\u6210 terminal_open\u2192terminal_send\u2192terminal_close",
-    "Complete terminal_open\u2192terminal_send\u2192terminal_close in 5 sessions",
-    [
-      [
-        "terminalSessions",
-        5
-      ]
-    ]
-  ],
-  [
-    "craft-master",
-    "craft",
-    "gold",
-    "\u5DE5\u7A0B\u5320\u4EBA",
-    "Engineering craft",
-    "\u5B8C\u6210 30 \u4E2A\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u4F1A\u8BDD\uFF0C\u6210\u529F\u4FEE\u6539\u6587\u4EF6 200 \u6B21\uFF0C\u6D3B\u8DC3 20 \u5929",
-    "Complete 30 build-loop sessions, 200 successful file modifications and 20 active dates",
-    [
-      [
-        "buildLoops",
-        30
-      ],
-      [
-        "fileChanges",
-        200
-      ],
-      [
-        "activeDays",
-        20
-      ]
-    ]
-  ],
-  [
-    "research-5",
-    "research",
-    "silver",
-    "\u8BC1\u636E\u94FE",
-    "Evidence trail",
-    "\u5B8C\u6210 5 \u4E2A\u641C\u7D22\u2192\u7F51\u9875\u2192\u4EA4\u4ED8\u4F1A\u8BDD\uFF0C\u5E76\u6210\u529F\u8BFB\u53D6\u7F51\u9875 25 \u6B21",
-    "Complete 5 research-loop sessions and 25 successful web fetches",
-    [
-      [
-        "researchLoops",
-        5
-      ],
-      [
-        "tool.web_fetch",
-        25
-      ]
-    ]
-  ],
-  [
-    "archive",
-    "research",
-    "silver",
-    "\u7ECF\u9A8C\u68C0\u7D22\u5458",
-    "Archive explorer",
-    "\u6210\u529F\u68C0\u7D22\u5386\u53F2\u4F1A\u8BDD\u6216\u4E8B\u4EF6 25 \u6B21\uFF0C\u6D3B\u8DC3 5 \u5929",
-    "Search past sessions or events successfully 25 times; be active on 5 dates",
-    [
-      [
-        "historySearches",
-        25
-      ],
-      [
-        "activeDays",
-        5
-      ]
-    ]
-  ],
-  [
-    "visual",
-    "research",
-    "silver",
-    "\u56FE\u6587\u5E76\u8BFB",
-    "Visual reader",
-    "\u6210\u529F\u8BFB\u53D6\u56FE\u7247 20 \u6B21\u3001\u8BFB\u53D6\u6587\u4EF6 100 \u6B21",
-    "Read images successfully 20 times and files 100 times",
-    [
-      [
-        "tool.read_image",
-        20
-      ],
-      [
-        "tool.read",
-        100
-      ]
-    ]
-  ],
-  [
-    "deliver",
-    "research",
-    "silver",
-    "\u6210\u679C\u53EF\u89C1",
-    "Visible deliverables",
-    "\u6210\u529F\u5C55\u793A\u4EA4\u4ED8\u7269 15 \u6B21\uFF0C\u8986\u76D6\u81F3\u5C11 10 \u4E2A\u6D3B\u8DC3\u4F1A\u8BDD",
-    "Present artifacts successfully 15 times across at least 10 active sessions",
-    [
-      [
-        "tool.present",
-        15
-      ],
-      [
-        "sessions",
-        10
-      ]
-    ]
-  ],
-  [
-    "research-master",
-    "research",
-    "gold",
-    "\u7814\u7A76\u5458",
-    "Researcher",
-    "\u5B8C\u6210 25 \u4E2A\u641C\u7D22\u2192\u7F51\u9875\u2192\u4EA4\u4ED8\u4F1A\u8BDD\uFF0C\u6210\u529F\u8BFB\u53D6\u7F51\u9875 150 \u6B21\uFF0C\u6D3B\u8DC3 20 \u5929",
-    "Complete 25 research-loop sessions, 150 web fetches and 20 active dates",
-    [
-      [
-        "researchLoops",
-        25
-      ],
-      [
-        "tool.web_fetch",
-        150
-      ],
-      [
-        "activeDays",
-        20
-      ]
-    ]
-  ],
-  [
-    "delegate",
-    "orchestration",
-    "silver",
-    "\u5206\u5DE5\u521D\u6210",
-    "Delegation practice",
-    "\u6210\u529F\u8C03\u7528 subagent 10 \u6B21\uFF0C\u8986\u76D6\u81F3\u5C11 5 \u4E2A\u6D3B\u8DC3\u4F1A\u8BDD",
-    "Invoke subagent successfully 10 times across at least 5 active sessions",
-    [
-      [
-        "tool.subagent",
-        10
-      ],
-      [
-        "sessions",
-        5
-      ]
-    ]
-  ],
-  [
-    "relay-delivery",
-    "orchestration",
-    "silver",
-    "\u534F\u4F5C\u4EA4\u4ED8",
-    "Collaborative delivery",
-    "\u5728 5 \u4E2A\u4E0D\u540C\u4F1A\u8BDD\u4E2D\uFF0C\u6210\u529F\u8C03\u7528\u5B50\u4EE3\u7406\u540E\u5C55\u793A\u4EA4\u4ED8\u7269",
-    "Invoke a subagent, then present an artifact successfully in 5 sessions",
-    [
-      [
-        "delegationSessions",
-        5
-      ]
-    ]
-  ],
-  [
-    "workflow",
-    "orchestration",
-    "silver",
-    "\u6D41\u7A0B\u8BBE\u8BA1\u5E08",
-    "Workflow designer",
-    "\u5B8C\u6210 5 \u6B21\u5DE5\u4F5C\u6D41\uFF0C\u6D3B\u8DC3 5 \u5929\uFF1B\u53D6\u6D88\u6216\u51FA\u9519\u4E0D\u8BA1\u5165",
-    "Complete 5 workflows on a profile with workflow support; be active on 5 dates",
-    [
-      [
-        "workflows",
-        5
-      ],
-      [
-        "activeDays",
-        5
-      ]
-    ]
-  ],
-  [
-    "goal",
-    "orchestration",
-    "silver",
-    "\u6709\u59CB\u6709\u7EC8",
-    "Finish the objective",
-    "\u5C06 5 \u4E2A\u4E0D\u540C\u76EE\u6807\u63A8\u8FDB\u5230 complete \u72B6\u6001",
-    "Bring 5 distinct goals to the complete phase",
-    [
-      [
-        "goals",
-        5
-      ]
-    ]
-  ],
-  [
-    "orchestration-master",
-    "orchestration",
-    "gold",
-    "\u7F16\u6392\u5927\u5E08",
-    "Orchestrator",
-    "\u5B8C\u6210 30 \u6B21\u5DE5\u4F5C\u6D41\u300120 \u4E2A\u76EE\u6807\uFF0C\u4EE5\u53CA 20 \u4E2A\u5B50\u4EE3\u7406\u2192\u4EA4\u4ED8\u4F1A\u8BDD",
-    "Complete 30 workflows, 20 goals and 20 delegation\u2192delivery sessions",
-    [
-      [
-        "workflows",
-        30
-      ],
-      [
-        "goals",
-        20
-      ],
-      [
-        "delegationSessions",
-        20
-      ]
-    ]
-  ],
-  [
-    "skills-3",
-    "skills",
-    "silver",
-    "\u5DE5\u5177\u4E4B\u5916",
-    "Beyond tools",
-    "\u6210\u529F\u52A0\u8F7D 3 \u79CD Skill\uFF0C\u5E76\u5B8C\u6210 5 \u4E2A Skill\u2192\u4FEE\u6539\u6216\u547D\u4EE4\u4F1A\u8BDD",
-    "Load 3 distinct Skills successfully and complete 5 Skill-practice sessions",
-    [
-      [
-        "distinctSkills",
-        3
-      ],
-      [
-        "skillSessions",
-        5
-      ]
-    ]
-  ],
-  [
-    "skills-5",
-    "skills",
-    "silver",
-    "\u77E5\u8BC6\u5E94\u7528\u8005",
-    "Knowledge in action",
-    "\u6210\u529F\u52A0\u8F7D 5 \u79CD Skill\uFF0C\u5B8C\u6210 20 \u4E2A Skill \u5B9E\u8DF5\u4F1A\u8BDD\uFF0C\u6D3B\u8DC3 10 \u5929",
-    "Load 5 Skills, complete 20 Skill-practice sessions and be active on 10 dates",
-    [
-      [
-        "distinctSkills",
-        5
-      ],
-      [
-        "skillSessions",
-        20
-      ],
-      [
-        "activeDays",
-        10
-      ]
-    ]
-  ],
-  [
-    "planner",
-    "skills",
-    "silver",
-    "\u4EFB\u52A1\u62C6\u89E3\u5E08",
-    "Task planner",
-    "\u5728 15 \u4E2A\u4F1A\u8BDD\u4F7F\u7528\u5F85\u529E\u5DE5\u5177\uFF0C\u4E14\u6BCF\u4E2A\u4F1A\u8BDD\u81F3\u5C11\u6210\u529F\u8C03\u7528\u5DE5\u5177 5 \u6B21",
-    "Use todos in 15 sessions with at least 5 successful tool calls each",
-    [
-      [
-        "plannedSessions",
-        15
-      ]
-    ]
-  ],
-  [
-    "toolbox",
-    "skills",
-    "silver",
-    "\u80FD\u529B\u5DE5\u5177\u7BB1",
-    "Capability toolbox",
-    "\u6210\u529F\u4F7F\u7528 15 \u79CD\u5DE5\u5177\uFF0C\u7D2F\u8BA1\u6210\u529F\u8C03\u7528 500 \u6B21",
-    "Use 15 different tools successfully and finish 500 successful calls",
-    [
-      [
-        "toolKinds",
-        15
-      ],
-      [
-        "successfulCalls",
-        500
-      ]
-    ]
-  ],
-  [
-    "skills-master",
-    "skills",
-    "gold",
-    "\u591A\u9886\u57DF\u5B9E\u8DF5",
-    "Cross-domain practice",
-    "\u52A0\u8F7D 8 \u79CD Skill\uFF0C\u5B8C\u6210 50 \u4E2A Skill \u5B9E\u8DF5\u4F1A\u8BDD\uFF0C\u6D3B\u8DC3 25 \u5929",
-    "Load 8 Skills, complete 50 Skill-practice sessions and be active on 25 dates",
-    [
-      [
-        "distinctSkills",
-        8
-      ],
-      [
-        "skillSessions",
-        50
-      ],
-      [
-        "activeDays",
-        25
-      ]
-    ]
-  ],
-  [
-    "active-10",
-    "journey",
-    "silver",
-    "\u5341\u65E5\u7EC3\u4E60",
-    "Ten days of practice",
-    "\u5728 10 \u4E2A\u4E0D\u540C\u65E5\u671F\u53D1\u9001\u6D88\u606F\uFF0C\u5E76\u5B8C\u6210 10 \u4E2A\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u4F1A\u8BDD",
-    "Send messages on 10 dates and complete 10 build-loop sessions",
-    [
-      [
-        "activeDays",
-        10
-      ],
-      [
-        "buildLoops",
-        10
-      ]
-    ]
-  ],
-  [
-    "active-30",
-    "journey",
-    "gold",
-    "\u957F\u671F\u9879\u76EE",
-    "Long-term project",
-    "\u6D3B\u8DC3 30 \u5929\uFF0C\u5B8C\u6210 50 \u4E2A\u6D3B\u8DC3\u4F1A\u8BDD\u53CA 20 \u4E2A\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u4F1A\u8BDD",
-    "Be active on 30 dates, finish 50 active sessions and 20 build-loop sessions",
-    [
-      [
-        "activeDays",
-        30
-      ],
-      [
-        "sessions",
-        50
-      ],
-      [
-        "buildLoops",
-        20
-      ]
-    ]
-  ],
-  [
-    "returning",
-    "journey",
-    "silver",
-    "\u6301\u7EED\u63A8\u8FDB",
-    "Steady progress",
-    "\u6700\u957F\u8FDE\u7EED\u6D3B\u8DC3 7 \u5929\uFF0C\u4E14\u6210\u529F\u4F7F\u7528 8 \u79CD\u5DE5\u5177",
-    "Reach a 7-day activity streak and use 8 tools successfully",
-    [
-      [
-        "bestStreak",
-        7
-      ],
-      [
-        "toolKinds",
-        8
-      ]
-    ]
-  ],
-  [
-    "veteran",
-    "journey",
-    "legendary",
-    "\u767E\u65E5\u5F00\u53D1\u8005",
-    "Hundred-day developer",
-    "\u6D3B\u8DC3 100 \u5929\uFF0C\u5B8C\u6210 100 \u4E2A\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u4F1A\u8BDD\u53CA 50 \u4E2A\u76EE\u6807",
-    "Be active on 100 dates; complete 100 build-loop sessions and 50 goals",
-    [
-      [
-        "activeDays",
-        100
-      ],
-      [
-        "buildLoops",
-        100
-      ],
-      [
-        "goals",
-        50
-      ]
-    ]
-  ],
-  [
-    "reliable",
-    "journey",
-    "gold",
-    "\u79EF\u7D2F\u6210\u7AE0",
-    "A body of work",
-    "\u6210\u529F\u4F7F\u7528\u5DE5\u5177 3000 \u6B21\u3001\u5C55\u793A\u4EA4\u4ED8\u7269 50 \u6B21\uFF0C\u6D3B\u8DC3 30 \u5929",
-    "Finish 3,000 successful calls, present artifacts 50 times and be active on 30 dates",
-    [
-      [
-        "successfulCalls",
-        3e3
-      ],
-      [
-        "tool.present",
-        50
-      ],
-      [
-        "activeDays",
-        30
-      ]
-    ]
-  ],
-  [
-    "breadth",
-    "mastery",
-    "gold",
-    "\u6A2A\u5411\u63A2\u7D22",
-    "Broad explorer",
-    "\u6210\u529F\u4F7F\u7528 8 \u4E2A\u80FD\u529B\u7C7B\u522B\uFF0C\u6D3B\u8DC3 15 \u5929",
-    "Use 8 capability categories successfully; be active on 15 dates",
-    [
-      [
-        "featureKinds",
-        8
-      ],
-      [
-        "activeDays",
-        15
-      ]
-    ]
-  ],
-  [
-    "expedition",
-    "mastery",
-    "gold",
-    "\u5168\u80FD\u8FDC\u5F81",
-    "Full-stack expedition",
-    "\u5728 5 \u4E2A\u4E0D\u540C\u4F1A\u8BDD\u4E2D\uFF0C\u5404\u6210\u529F\u4F7F\u7528\u81F3\u5C11 6 \u4E2A\u80FD\u529B\u7C7B\u522B",
-    "Use at least 6 capability categories successfully in each of 5 sessions",
-    [
-      [
-        "broadSessions",
-        5
-      ]
-    ]
-  ],
-  [
-    "master",
-    "mastery",
-    "legendary",
-    "\u5F00\u53D1\u8005\u5927\u5E08",
-    "Developer master",
-    "\u5B8C\u6210 50 \u4E2A\u5F00\u53D1\u95ED\u73AF\u300120 \u4E2A\u7814\u7A76\u95ED\u73AF\u300120 \u4E2A\u76EE\u6807\u548C 10 \u6B21\u5DE5\u4F5C\u6D41\uFF0C\u6D3B\u8DC3 40 \u5929",
-    "Complete 50 build loops, 20 research loops, 20 goals, 10 workflows and 40 active dates",
-    [
-      [
-        "buildLoops",
-        50
-      ],
-      [
-        "researchLoops",
-        20
-      ],
-      [
-        "goals",
-        20
-      ],
-      [
-        "workflows",
-        10
-      ],
-      [
-        "activeDays",
-        40
-      ]
-    ]
-  ],
-  [
-    "secret-archive",
-    "research",
-    "secret",
-    "\u65E7\u77E5\u65B0\u89E3",
-    "Old knowledge, new insight",
-    "\u5728 5 \u4E2A\u4F1A\u8BDD\u4E2D\u540C\u65F6\u6210\u529F\u68C0\u7D22\u5386\u53F2\u3001\u8BFB\u53D6\u7F51\u9875\u5E76\u5C55\u793A\u4EA4\u4ED8\u7269",
-    "Search history, fetch the web and present artifacts in 5 sessions",
-    [
-      [
-        "archiveSessions",
-        5
-      ]
-    ]
-  ],
-  [
-    "secret-method",
-    "craft",
-    "secret",
-    "\u7AE0\u6CD5",
-    "Method",
-    "\u5728 10 \u4E2A\u4F1A\u8BDD\u5B8C\u6210\u5F00\u53D1\u95ED\u73AF\uFF0C\u540C\u65F6\u4F7F\u7528 grep \u548C\u5F85\u529E\u5DE5\u5177",
-    "Complete a build loop with grep and todos in each of 10 sessions",
-    [
-      [
-        "methodSessions",
-        10
-      ]
-    ]
-  ],
-  [
-    "secret-relay",
-    "orchestration",
-    "secret",
-    "\u63A5\u529B\u8D5B",
-    "Relay",
-    "\u5728 3 \u4E2A\u4F1A\u8BDD\u4E2D\u6210\u529F\u52A0\u8F7D Skill\u3001\u8C03\u7528\u5B50\u4EE3\u7406\u3001\u5B8C\u6210\u5DE5\u4F5C\u6D41\u5E76\u5C55\u793A\u4EA4\u4ED8\u7269",
-    "Load a Skill, invoke a subagent, complete a workflow and present an artifact in 3 sessions",
-    [
-      [
-        "relaySessions",
-        3
-      ]
-    ]
-  ],
-  [
-    "platinum",
-    "mastery",
-    "platinum",
-    "\u6210\u5C31\u6BBF\u5802",
-    "Hall of mastery",
-    "\u89E3\u9501\u5168\u90E8 32 \u4E2A\u516C\u5F00\u6210\u5C31\uFF1B\u9690\u85CF\u6210\u5C31\u4E0D\u5F71\u54CD\u767D\u91D1",
-    "Unlock all 32 public achievements; secrets do not block platinum",
-    []
-  ]
-];
 var tierPoints = { bronze: 25, silver: 75, gold: 150, legendary: 300, secret: 100, platinum: 500 };
-var achievements = rows.map(([id, category, tier, zh2, en2, zhDescription, enDescription, requirements]) => ({
+var make = (track, rows) => rows.map(([id, category, tier, zh2, en2, zhDescription, enDescription, requirements, upgrade = false]) => ({
   id,
   category,
   tier,
+  track,
   points: tierPoints[tier],
   name: { zh: zh2, en: en2 },
   description: { zh: zhDescription, en: enDescription },
-  requirements
+  requirements: Object.entries(requirements),
+  upgrade
 }));
+var coreAchievements = make("core", [
+  ["first-loop", "journey", "bronze", "\u5F00\u53D1\u8005\u4E0A\u7EBF", "Developer online", "\u5728\u4E00\u8F6E\u4E2D\u4F9D\u6B21\u8BFB\u53D6\u3001\u4FEE\u6539\u6587\u4EF6\u3001\u8FD0\u884C\u547D\u4EE4\uFF0C\u5E76\u6B63\u5E38\u7ED3\u675F\u8BE5\u8F6E", "Read, modify a file and run a command in order in one normally completed turn", { buildLoops: 1 }],
+  ["first-plan", "journey", "bronze", "\u6709\u5907\u800C\u6765", "Prepared", "\u8BB0\u5F55\u672A\u5B8C\u6210\u7684\u5F85\u529E\u540E\uFF0C\u518D\u5B8C\u6210 5 \u6B21\u975E\u5F85\u529E\u5DE5\u5177\u8C03\u7528\uFF0C\u5E76\u6B63\u5E38\u7ED3\u675F\u8BE5\u8F6E", "Record unfinished todos, then finish 5 non-todo calls in the same normally completed turn", { plannedTurns: 1 }],
+  ["first-delivery", "journey", "bronze", "\u5F00\u95E8\u89C1\u5C71", "First delivery", "\u9996\u6B21\u4EA7\u751F\u975E\u7A7A\u7684\u6587\u4EF6\u4EA4\u4ED8\u8BB0\u5F55", "Record your first non-empty file delivery", { deliveries: 1 }],
+  ["first-goal", "journey", "bronze", "\u6709\u59CB\u6709\u7EC8", "See it through", "\u9996\u6B21\u5C06\u4E00\u4E2A\u76EE\u6807\u8BB0\u5F55\u4E3A\u5B8C\u6210", "Record a completed goal for the first time", { goals: 1 }],
+  ["craft-5", "craft", "silver", "\u5C0F\u6B65\u8FED\u4EE3", "Small iterations", "\u5B8C\u6210 5 \u8F6E\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u6D41\u7A0B", "Complete 5 read\u2192modify\u2192command turns", { buildLoops: 5 }],
+  ["craft-25", "craft", "silver", "\u719F\u80FD\u751F\u5DE7", "Practice in motion", "\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E\u8BFB\u53D6\u2192\u4FEE\u6539\u2192\u547D\u4EE4\u6D41\u7A0B", "Accumulate 25 read\u2192modify\u2192command turns", { buildLoops: 25 }, true],
+  ["craft-master", "craft", "gold", "\u5DE5\u7A0B\u5320\u4EBA", "Engineering craft", "\u5B8C\u6210 100 \u8F6E\u5F00\u53D1\u6D41\u7A0B\uFF1B30 \u4E2A\u6D3B\u8DC3\u65E5\u671F\u6709\u5F00\u53D1\u6D41\u7A0B\u5B8C\u6210", "Complete 100 build turns, with completed build turns on 30 active dates", { buildLoops: 100, practiceDays: 30 }],
+  ["search-map", "craft", "silver", "\u4EE3\u7801\u5BFC\u822A\u5458", "Code navigator", "grep \u8FD4\u56DE 50 \u6B21\u3001glob \u8FD4\u56DE 30 \u6B21\uFF1B10 \u4E2A\u4E3B\u4F1A\u8BDD\u5404\u4F7F\u7528\u8FC7\u4E24\u8005", "Finish 50 grep and 30 glob calls; use both in each of 10 main sessions", { "tool.grep": 50, "tool.glob": 30, searchSessions: 10 }],
+  ["code-cartographer", "craft", "gold", "\u4EE3\u7801\u5236\u56FE\u5E08", "Code cartographer", "\u5728 50 \u4E2A\u4E3B\u4F1A\u8BDD\u5404\u4F7F\u7528 grep \u4E0E glob\uFF0C\u5E76\u7D2F\u8BA1\u5B8C\u6210 50 \u8F6E\u5F00\u53D1\u6D41\u7A0B", "Use grep and glob in each of 50 main sessions; complete 50 build turns overall", { searchSessions: 50, buildLoops: 50 }],
+  ["deliver", "research", "silver", "\u6210\u679C\u53EF\u89C1", "Visible deliverables", "\u8BB0\u5F55 15 \u6B21\u6587\u4EF6\u4EA4\u4ED8\uFF0C\u5206\u5E03\u5728\u81F3\u5C11 10 \u4E2A\u4E3B\u4F1A\u8BDD", "Record 15 file deliveries, with deliveries in at least 10 main sessions", { deliveries: 15, deliverySessions: 10 }],
+  ["deliver-100", "research", "gold", "\u4EA4\u4ED8\u957F\u8DD1", "Delivery distance", "\u8BB0\u5F55 100 \u6B21\u6587\u4EF6\u4EA4\u4ED8\uFF1B30 \u4E2A\u6D3B\u8DC3\u65E5\u671F\u6709\u4EA4\u4ED8\u8BB0\u5F55", "Record 100 file deliveries, with deliveries on 30 active dates", { deliveries: 100, deliveryDays: 30 }],
+  ["planner", "skills", "silver", "\u4EFB\u52A1\u62C6\u89E3\u5E08", "Plan into action", "\u7D2F\u8BA1\u5B8C\u6210 15 \u8F6E\u5148\u8BB0\u5F85\u529E\u3001\u518D\u8C03\u7528\u81F3\u5C11 5 \u6B21\u5176\u4ED6\u5DE5\u5177\u7684\u6D41\u7A0B", "Accumulate 15 completed turns with unfinished todos followed by at least 5 other tool calls", { plannedTurns: 15 }, true],
+  ["planner-100", "skills", "gold", "\u7AE0\u6CD5\u6E10\u6210", "Method in practice", "\u5B8C\u6210 100 \u8F6E\u5148\u89C4\u5212\u540E\u6267\u884C\u7684\u6D41\u7A0B\uFF0C\u5E76\u7D2F\u8BA1\u5B8C\u6210 50 \u8F6E\u5F00\u53D1\u6D41\u7A0B", "Complete 100 planned turns and 50 build turns overall", { plannedTurns: 100, buildLoops: 50 }],
+  ["checklist", "skills", "silver", "\u4E00\u9879\u4E0D\u843D", "All checked", "\u4E00\u8F6E\u5185\u5C06\u81F3\u5C11 3 \u9879\u7684\u672A\u5B8C\u6210\u6E05\u5355\u66F4\u65B0\u4E3A\u5168\u5B8C\u6210\uFF0C\u4FDD\u6301\u5185\u5BB9\u53CA\u987A\u5E8F\u4E0D\u53D8", "In one completed turn, change an unfinished list of at least 3 items to all completed without changing its text or order", { checklistTurns: 1 }],
+  ["checklist-25", "skills", "gold", "\u6E05\u5355\u8FBE\u4EBA", "Checklist practice", "\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E\u540C\u4E00\u4EFD\u81F3\u5C11 3 \u9879\u6E05\u5355\u4ECE\u672A\u5B8C\u6210\u5230\u5168\u5B8C\u6210\u7684\u6D41\u7A0B", "Accumulate 25 completed turns that finish an unchanged checklist of at least 3 items", { checklistTurns: 25 }, true],
+  ["checklist-100", "skills", "legendary", "\u6536\u5C3E\u4E13\u5BB6", "Finishing specialist", "\u7D2F\u8BA1\u5B8C\u6210 100 \u8F6E\u540C\u4E00\u4EFD\u81F3\u5C11 3 \u9879\u6E05\u5355\u4ECE\u672A\u5B8C\u6210\u5230\u5168\u5B8C\u6210\u7684\u6D41\u7A0B", "Accumulate 100 completed turns that finish an unchanged checklist of at least 3 items", { checklistTurns: 100 }],
+  ["goal", "journey", "silver", "\u76EE\u6807\u8FBE\u6210", "Goals recorded", "\u8BB0\u5F55 5 \u4E2A\u4E0D\u540C\u76EE\u6807\u5B8C\u6210", "Record 5 distinct completed goals", { goals: 5 }],
+  ["goal-50", "journey", "gold", "\u6B65\u6B65\u4E3A\u8425", "Goal by goal", "\u7D2F\u8BA1\u8BB0\u5F55 50 \u4E2A\u4E0D\u540C\u76EE\u6807\u5B8C\u6210", "Accumulate 50 distinct completed goals", { goals: 50 }, true],
+  ["active-10", "journey", "silver", "\u5341\u65E5\u7EC3\u4E60", "Ten active days", "\u5728 10 \u4E2A\u65E5\u671F\u53D1\u9001\u7528\u6237\u6D88\u606F\uFF0C\u5E76\u7D2F\u8BA1\u5B8C\u6210 10 \u8F6E\u5F00\u53D1\u6D41\u7A0B", "Send user messages on 10 dates and complete 10 build turns overall", { activeDays: 10, buildLoops: 10 }],
+  ["active-30", "journey", "gold", "\u957F\u671F\u9879\u76EE", "A longer journey", "\u6D3B\u8DC3 30 \u5929\uFF0C\u5E76\u7D2F\u8BA1\u5B8C\u6210 50 \u8F6E\u5F00\u53D1\u6D41\u7A0B", "Be active on 30 dates and complete 50 build turns overall", { activeDays: 30, buildLoops: 50 }],
+  ["returning", "journey", "silver", "\u6301\u7EED\u63A8\u8FDB", "Keep returning", "\u8FDE\u7EED 7 \u5929\u53D1\u9001\u7528\u6237\u6D88\u606F\uFF0C\u5E76\u7D2F\u8BA1\u8BB0\u5F55 5 \u6B21\u4EA4\u4ED8", "Send user messages on 7 consecutive dates and record 5 deliveries overall", { bestStreak: 7, deliveries: 5 }],
+  ["veteran", "mastery", "legendary", "\u767E\u65E5\u5F00\u53D1\u8005", "Hundred-day developer", "100 \u4E2A\u6D3B\u8DC3\u65E5\u671F\u6709\u5F00\u53D1\u6D41\u7A0B\u5B8C\u6210\uFF0C\u7D2F\u8BA1\u5B8C\u6210 250 \u8F6E\u5F00\u53D1\u6D41\u7A0B\u53CA 50 \u4E2A\u76EE\u6807", "Complete build turns on 100 active dates, 250 build turns overall and 50 goals", { practiceDays: 100, buildLoops: 250, goals: 50 }],
+  ["reliable", "mastery", "gold", "\u79EF\u7D2F\u6210\u7AE0", "A body of work", "\u7D2F\u8BA1 3000 \u6B21\u975E\u9519\u8BEF\u5DE5\u5177\u8FD4\u56DE\u300150 \u6B21\u4EA4\u4ED8\uFF0C\u6D3B\u8DC3 30 \u5929", "Accumulate 3000 non-error tool returns, 50 deliveries and 30 active dates", { successfulCalls: 3e3, deliveries: 50, activeDays: 30 }],
+  ["craft-legend", "mastery", "legendary", "\u5343\u9524\u767E\u70BC", "A thousand iterations", "\u5B8C\u6210 1000 \u8F6E\u5F00\u53D1\u6D41\u7A0B\uFF0C\u4E14 180 \u4E2A\u6D3B\u8DC3\u65E5\u671F\u6709\u5F00\u53D1\u6D41\u7A0B\u5B8C\u6210", "Complete 1000 build turns, with completed build turns on 180 active dates", { buildLoops: 1e3, practiceDays: 180 }]
+]);
+var specialties = make("specialty", [
+  ["first-research", "research", "bronze", "\u67E5\u8BC1\u4E4B\u540E", "Check the source", "\u4E00\u8F6E\u5185\u4F9D\u6B21\u641C\u7D22\u7F51\u9875\u3001\u8BFB\u53D6\u7F51\u9875\u3001\u5199\u5165\u6587\u4EF6\u6216\u4EA4\u4ED8\uFF0C\u5E76\u6B63\u5E38\u7ED3\u675F", "Search, fetch, then write or deliver in one normally completed turn", { researchLoops: 1 }],
+  ["research-5", "research", "silver", "\u8BC1\u636E\u94FE", "Research practice", "\u5B8C\u6210 5 \u8F6E\u7814\u7A76\u6D41\u7A0B\uFF0C\u5E76\u7D2F\u8BA1\u8BFB\u53D6 25 \u6B21\u7F51\u9875", "Complete 5 research turns and 25 web fetches overall", { researchLoops: 5, "tool.web_fetch": 25 }],
+  ["research-master", "research", "gold", "\u7814\u7A76\u5458", "Researcher", "\u5B8C\u6210 50 \u8F6E\u7814\u7A76\u6D41\u7A0B\uFF0C\u7D2F\u8BA1\u8BFB\u53D6 150 \u6B21\u7F51\u9875\uFF0C\u6D3B\u8DC3 20 \u5929", "Complete 50 research turns, 150 web fetches and 20 active dates", { researchLoops: 50, "tool.web_fetch": 150, activeDays: 20 }],
+  ["research-legend", "research", "legendary", "\u6C42\u77E5\u65E0\u6DAF", "Research expedition", "\u5B8C\u6210 200 \u8F6E\u7814\u7A76\u6D41\u7A0B\uFF0C\u4E14 100 \u4E2A\u6D3B\u8DC3\u65E5\u671F\u6709\u7814\u7A76\u6D41\u7A0B\u5B8C\u6210", "Complete 200 research turns, with research turns completed on 100 active dates", { researchLoops: 200, researchDays: 100 }],
+  ["archive", "research", "silver", "\u7ECF\u9A8C\u68C0\u7D22\u5458", "History explorer", "\u68C0\u7D22\u5386\u53F2 25 \u6B21\uFF0C\u81F3\u5C11 10 \u4E2A\u4E3B\u4F1A\u8BDD\u6709\u5386\u53F2\u68C0\u7D22", "Search history 25 times, with history searches in at least 10 main sessions", { historySearches: 25, historySessions: 10 }],
+  ["archive-master", "research", "gold", "\u6E29\u6545\u77E5\u65B0", "History into delivery", "\u7D2F\u8BA1\u5B8C\u6210 50 \u8F6E\u5148\u68C0\u7D22\u5386\u53F2\u3001\u540E\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Accumulate 50 completed turns that search history before delivering files", { archiveTurns: 50 }, true],
+  ["visual", "research", "silver", "\u56FE\u6587\u5E76\u8BFB", "Visual research", "\u5728 5 \u4E2A\u6B63\u5E38\u5B8C\u6210\u7684\u8F6E\u6B21\u4E2D\u65E2\u8BFB\u53D6\u56FE\u7247\u53C8\u4EA4\u4ED8\u6587\u4EF6", "Read images and deliver files in each of 5 normally completed turns", { visionDeliveryTurns: 5 }],
+  ["visual-master", "research", "gold", "\u89C6\u754C\u5F00\u62D3\u8005", "Visual explorer", "\u7D2F\u8BA1\u5B8C\u6210 50 \u8F6E\u540C\u65F6\u8BFB\u53D6\u56FE\u7247\u4E0E\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Accumulate 50 completed turns with image reading and file delivery", { visionDeliveryTurns: 50 }, true],
+  ["delegate", "orchestration", "bronze", "\u5206\u5DE5\u521D\u6210", "First delegation", "\u901A\u8FC7\u4EFB\u4E00\u6807\u51C6\u5B50\u4EE3\u7406\u5165\u53E3\u83B7\u5F97\u9996\u6B21\u975E\u9519\u8BEF\u8FD4\u56DE\uFF1B\u4E0D\u4EE3\u8868\u5B50\u4EE3\u7406\u5DF2\u5B8C\u6210", "Receive a non-error return from a standard delegation tool; this does not certify child completion", { delegationCalls: 1 }],
+  ["team-delivery", "orchestration", "silver", "\u53CC\u4EBA\u6210\u884C", "Two in step", "\u4E3B\u4F1A\u8BDD\u4E00\u8F6E\u5185\uFF0C\u5173\u8054\u5B50\u4EE3\u7406\u5B8C\u6210\u54CD\u5E94\u540E\u518D\u4EA4\u4ED8\u6587\u4EF6\uFF0C\u5E76\u6B63\u5E38\u7ED3\u675F\u8BE5\u8F6E", "In one completed main turn, deliver files after a linked child completes a response", { collaborationTurns: 1 }],
+  ["relay-delivery", "orchestration", "silver", "\u534F\u4F5C\u4EA4\u4ED8", "Collaborative delivery", "\u5B8C\u6210 10 \u8F6E\u6709\u5B50\u4EE3\u7406\u5B8C\u6210\u54CD\u5E94\u540E\u518D\u4EA4\u4ED8\u7684\u4E3B\u4F1A\u8BDD\u6D41\u7A0B", "Complete 10 main turns with a child response completed before file delivery", { collaborationTurns: 10 }],
+  ["team-3", "orchestration", "gold", "\u4E09\u4EBA\u5C0F\u961F", "A small squad", "\u5355\u8F6E\u4EA4\u4ED8\u524D\u6709 3 \u4E2A\u5173\u8054\u5B50\u4EE3\u7406\u5B8C\u6210\u54CD\u5E94\uFF0C\u7D2F\u8BA1\u5B8C\u6210 10 \u8F6E\u534F\u4F5C\u4EA4\u4ED8", "Reach 3 responding children before delivery in one turn; complete 10 collaborative delivery turns overall", { maxTeamSize: 3, collaborationTurns: 10 }],
+  ["team-8", "orchestration", "legendary", "\u516B\u65B9\u534F\u4F5C", "Eight in concert", "\u5355\u8F6E\u4EA4\u4ED8\u524D\u6709 8 \u4E2A\u5173\u8054\u5B50\u4EE3\u7406\u5B8C\u6210\u54CD\u5E94\uFF0C\u7D2F\u8BA1\u5B8C\u6210 100 \u8F6E\u534F\u4F5C\u4EA4\u4ED8", "Reach 8 responding children before delivery in one turn; complete 100 collaborative delivery turns overall", { maxTeamSize: 8, collaborationTurns: 100 }],
+  ["workflow", "orchestration", "bronze", "\u6D41\u7A0B\u8D77\u6B65", "First workflow", "\u8BB0\u5F55\u4E00\u6B21\u6B63\u5E38\u7ED3\u675F\u7684\u5DE5\u4F5C\u6D41", "Record one normally completed workflow run", { workflows: 1 }],
+  ["workflow-5", "orchestration", "silver", "\u6D41\u7A0B\u8BBE\u8BA1\u5E08", "Workflow practice", "\u7D2F\u8BA1\u8BB0\u5F55 5 \u6B21\u6B63\u5E38\u7ED3\u675F\u7684\u5DE5\u4F5C\u6D41", "Accumulate 5 normally completed workflow runs", { workflows: 5 }, true],
+  ["workflow-master", "orchestration", "gold", "\u6D41\u7A0B\u7EDF\u7B79", "Workflow coordination", "\u5B8C\u6210 25 \u6B21\u81F3\u5C11 3 \u540D\u6210\u5458\u5168\u90E8\u5B8C\u6210\u3001\u6574\u4F53\u6B63\u5E38\u7ED3\u675F\u7684\u5DE5\u4F5C\u6D41", "Complete 25 workflows with at least 3 members, every member completed and the run completed", { cleanWorkflows: 25 }, true],
+  ["workflow-architect", "orchestration", "legendary", "\u7F16\u6392\u67B6\u6784\u5E08", "Workflow architect", "\u5B8C\u6210 50 \u6B21\u81F3\u5C11 3 \u540D\u6210\u5458\u30012 \u4E2A\u5177\u540D\u9636\u6BB5\u4E14\u6210\u5458\u5168\u5B8C\u6210\u7684\u5DE5\u4F5C\u6D41\uFF1B\u5355\u6B21\u8FBE\u5230 8 \u540D\u6210\u5458\u5168\u5B8C\u6210\uFF1B\u5B8C\u6210 10 \u79CD\u540D\u79F0\u7684\u5DE5\u4F5C\u6D41", "Complete 50 all-completed workflows with 3+ members across 2+ named phases; reach 8 completed members in one run; complete 10 workflow names", { stagedWorkflows: 50, maxWorkflowMembers: 8, distinctWorkflows: 10 }],
+  ["first-skill", "skills", "bronze", "\u5B66\u4EE5\u81F4\u7528", "Put it to work", "\u52A0\u8F7D Skill \u540E\u518D\u4FEE\u6539\u6587\u4EF6\u6216\u8FD0\u884C\u547D\u4EE4\uFF0C\u5E76\u6B63\u5E38\u7ED3\u675F\u8BE5\u8F6E", "Load a Skill before modifying files or running a command in a normally completed turn", { skillTurns: 1 }],
+  ["skills-3", "skills", "silver", "\u5DE5\u5177\u4E4B\u5916", "Beyond tools", "\u52A0\u8F7D 3 \u79CD Skill\uFF0C\u7D2F\u8BA1\u5B8C\u6210 5 \u8F6E\u52A0\u8F7D\u540E\u4FEE\u6539\u6216\u8FD0\u884C\u547D\u4EE4\u7684\u6D41\u7A0B", "Load 3 distinct Skills and complete 5 Skill-practice turns overall", { distinctSkills: 3, skillTurns: 5 }],
+  ["skills-5", "skills", "gold", "\u77E5\u8BC6\u5E94\u7528\u8005", "Knowledge in practice", "\u52A0\u8F7D 5 \u79CD Skill\uFF0C\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E Skill \u5B9E\u8DF5", "Load 5 distinct Skills and complete 25 Skill-practice turns overall", { distinctSkills: 5, skillTurns: 25 }],
+  ["skills-master", "skills", "legendary", "\u591A\u9886\u57DF\u5B9E\u8DF5", "Many disciplines", "\u52A0\u8F7D 12 \u79CD Skill\uFF0C\u5B8C\u6210 100 \u8F6E\u5B9E\u8DF5\uFF0C\u5176\u4E2D 25 \u8F6E\u5728\u64CD\u4F5C\u524D\u52A0\u8F7D\u81F3\u5C11 2 \u79CD Skill", "Load 12 distinct Skills; complete 100 practice turns, including 25 with at least 2 Skills loaded before practice", { distinctSkills: 12, skillTurns: 100, skillComboTurns: 25 }],
+  ["skill-combo", "skills", "silver", "\u878D\u4F1A\u8D2F\u901A", "Skills combined", "\u4E00\u8F6E\u5185\u52A0\u8F7D\u81F3\u5C11 2 \u79CD Skill\uFF0C\u518D\u4FEE\u6539\u6587\u4EF6\u6216\u8FD0\u884C\u547D\u4EE4\uFF0C\u5E76\u6B63\u5E38\u7ED3\u675F", "Load at least 2 distinct Skills before modifying files or running a command in one completed turn", { maxSkillsPerTurn: 2 }],
+  ["skill-orchestra", "skills", "gold", "\u56DB\u827A\u534F\u594F", "Four Skills together", "\u5355\u8F6E\u5B9E\u8DF5\u524D\u52A0\u8F7D\u81F3\u5C11 4 \u79CD Skill\uFF0C\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E\u591A Skill \u5B9E\u8DF5", "Practice with 4 Skills in one turn; complete 25 multi-Skill practice turns overall", { maxSkillsPerTurn: 4, skillComboTurns: 25 }],
+  ["first-program", "automation", "bronze", "\u7A0B\u5E8F\u5F00\u573A", "First program", "\u5B8C\u6210\u4E00\u6B21\u542B\u5DE5\u5177\u5B50\u8C03\u7528\u7684 PTC \u7A0B\u5E8F\uFF0C\u7A0B\u5E8F\u53CA\u5B50\u8C03\u7528\u5747\u65E0\u9519\u8BEF\u6807\u8BB0", "Finish a PTC program with tool subcalls and no error flags in the program or subcalls", { ptcPrograms: 1 }],
+  ["ptc-combo", "automation", "silver", "\u7A0B\u5E8F\u8C03\u5EA6\u5458", "Program coordinator", "\u7D2F\u8BA1\u5B8C\u6210 5 \u6B21\u8986\u76D6\u81F3\u5C11 3 \u7C7B\u80FD\u529B\u4E14\u65E0\u9519\u8BEF\u6807\u8BB0\u7684 PTC \u7A0B\u5E8F", "Accumulate 5 PTC programs covering at least 3 capability groups without error flags", { ptcMultiPrograms: 5 }, true],
+  ["ptc-batch", "automation", "silver", "\u6279\u91CF\u5904\u7406", "Batch practice", "\u7D2F\u8BA1\u5B8C\u6210 5 \u6B21\u81F3\u5C11\u542B 10 \u4E2A\u5B50\u8C03\u7528\u4E14\u65E0\u9519\u8BEF\u6807\u8BB0\u7684 PTC \u7A0B\u5E8F", "Accumulate 5 PTC programs with at least 10 subcalls and no error flags", { ptcBatchPrograms: 5 }, true],
+  ["ptc-polymath", "automation", "gold", "\u80FD\u529B\u4EA4\u54CD", "Capability composition", "\u5355\u6B21 PTC \u7A0B\u5E8F\u8986\u76D6 6 \u7C7B\u80FD\u529B\u4E14\u65E0\u9519\u8BEF\u6807\u8BB0\uFF0C\u7D2F\u8BA1\u5B8C\u6210 25 \u6B21\u4E09\u7C7B\u80FD\u529B\u7A0B\u5E8F", "Cover 6 capability groups in one error-free PTC program; complete 25 three-group programs overall", { maxPtcFeatures: 6, ptcMultiPrograms: 25 }],
+  ["ptc-maestro", "automation", "legendary", "\u7A0B\u5E8F\u7F16\u6392\u5927\u5E08", "Program maestro", "\u5B8C\u6210 100 \u6B21\u4E09\u7C7B\u80FD\u529B\u7A0B\u5E8F\u53CA 50 \u6B21\u81F3\u5C11 10 \u4E2A\u5B50\u8C03\u7528\u7684\u7A0B\u5E8F\uFF0C\u5747\u65E0\u9519\u8BEF\u6807\u8BB0", "Complete 100 three-group PTC programs and 50 programs with 10+ subcalls, all without error flags", { ptcMultiPrograms: 100, ptcBatchPrograms: 50 }],
+  ["terminal", "automation", "silver", "\u7EC8\u7AEF\u638C\u8235", "Terminal practice", "\u5BF9\u540C\u4E00\u7EC8\u7AEF\u4F9D\u6B21\u53D1\u9001\u8F93\u5165\u3001\u8BFB\u53D6\u8F93\u51FA\u5E76\u5173\u95ED\uFF0C\u7D2F\u8BA1 5 \u6B21", "Send, read and close the same terminal in order, 5 times", { terminalCycles: 5 }],
+  ["terminal-master", "automation", "gold", "\u7EC8\u7AEF\u8001\u624B", "Terminal veteran", "\u7D2F\u8BA1\u5B8C\u6210 50 \u6B21\u540C\u4E00\u7EC8\u7AEF\u7684\u53D1\u9001\u2192\u8BFB\u53D6\u2192\u5173\u95ED\u6D41\u7A0B", "Accumulate 50 send\u2192read\u2192close cycles on matching terminal identities", { terminalCycles: 50 }, true],
+  ["lsp", "craft", "silver", "\u8BED\u4E49\u89C6\u91CE", "Semantic view", "\u5B8C\u6210 25 \u6B21\u975E\u9519\u8BEF LSP \u8C03\u7528\uFF0C\u6D3B\u8DC3 5 \u5929", "Finish 25 non-error LSP calls and be active on 5 dates", { "tool.lsp": 25, activeDays: 5 }],
+  ["semantic-delivery", "craft", "gold", "\u8BED\u4E49\u5B9E\u8DF5", "Semantic practice", "\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E\u540C\u65F6\u4F7F\u7528 LSP \u548C\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Accumulate 25 completed turns with LSP use and file delivery", { semanticDeliveryTurns: 25 }, true],
+  ["mcp-librarian", "research", "silver", "\u8D44\u6E90\u7BA1\u7406\u5458", "Resource librarian", "\u7D2F\u8BA1\u5B8C\u6210 10 \u8F6E\u540C\u65F6\u8BFB\u53D6 MCP \u8D44\u6E90\u548C\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Accumulate 10 completed turns with MCP resource reading and file delivery", { resourceDeliveryTurns: 10 }, true],
+  ["browser-pioneer", "research", "silver", "\u6D4F\u89C8\u5668\u63A2\u7D22\u8005", "Browser explorer", "\u7D2F\u8BA1\u5B8C\u6210 10 \u8F6E\u540C\u65F6\u4F7F\u7528 Stagehand \u6D4F\u89C8\u5668\u5DE5\u5177\u548C\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Accumulate 10 completed turns with Stagehand browser tools and file delivery", { browserDeliveryTurns: 10 }, true],
+  ["toolbox", "mastery", "gold", "\u80FD\u529B\u5DE5\u5177\u7BB1", "Capability toolbox", "\u4F7F\u7528 20 \u79CD\u5DE5\u5177\uFF0C\u8986\u76D6 10 \u7C7B\u5DF2\u8BC6\u522B\u80FD\u529B", "Use 20 distinct tools across 10 recognized capability groups", { toolKinds: 20, featureKinds: 10 }],
+  ["breadth", "mastery", "gold", "\u6A2A\u5411\u63A2\u7D22", "Broad exploration", "\u8986\u76D6 12 \u7C7B\u5DF2\u8BC6\u522B\u80FD\u529B\uFF0C\u6D3B\u8DC3 30 \u5929", "Use 12 recognized capability groups and be active on 30 dates", { featureKinds: 12, activeDays: 30 }],
+  ["expedition", "mastery", "gold", "\u5168\u80FD\u8FDC\u5F81", "A broad expedition", "\u5B8C\u6210 25 \u8F6E\u81F3\u5C11\u516D\u7C7B\u80FD\u529B\u7684\u6D41\u7A0B\uFF0C\u5176\u4E2D\u5355\u8F6E\u8FBE\u5230\u516B\u7C7B\u80FD\u529B", "Complete 25 turns using at least 6 capability groups; reach 8 groups in one turn", { broadTurns: 25, maxTurnFeatures: 8 }],
+  ["full-calendar", "mastery", "legendary", "\u56DB\u5B63\u540C\u884C", "Across the seasons", "\u5728 12 \u4E2A\u4E0D\u540C\u6708\u4EFD\u6D3B\u8DC3\uFF0C\u4E14 100 \u4E2A\u6D3B\u8DC3\u65E5\u671F\u6709\u4EA4\u4ED8\u8BB0\u5F55", "Be active in 12 distinct calendar months, with deliveries on 100 active dates", { activeMonths: 12, deliveryDays: 100 }],
+  ["marathon", "mastery", "legendary", "\u5F00\u53D1\u957F\u5F81", "The long journey", "\u6D3B\u8DC3 365 \u5929\uFF0C\u5B8C\u6210 1500 \u8F6E\u5F00\u53D1\u6D41\u7A0B\u5E76\u8BB0\u5F55 300 \u6B21\u4EA4\u4ED8", "Be active on 365 dates, complete 1500 build turns and record 300 deliveries", { activeDays: 365, buildLoops: 1500, deliveries: 300 }],
+  ["master", "mastery", "legendary", "\u5F00\u53D1\u8005\u5927\u5E08", "Developer mastery", "\u5B8C\u6210\u5343\u8F6E\u5F00\u53D1\u3001200 \u8F6E\u7814\u7A76\u3001100 \u8F6E\u534F\u4F5C\u4EA4\u4ED8\u300150 \u6B21\u6210\u5458\u5168\u5B8C\u6210\u5DE5\u4F5C\u6D41\u3001100 \u6B21\u591A\u80FD\u529B PTC\uFF0C\u5E76\u6D3B\u8DC3 180 \u5929", "Complete 1000 build turns, 200 research turns, 100 collaborative deliveries, 50 all-completed workflows, 100 multi-group PTC programs and 180 active dates", { buildLoops: 1e3, researchLoops: 200, collaborationTurns: 100, cleanWorkflows: 50, ptcMultiPrograms: 100, activeDays: 180 }],
+  ["mapped-route", "craft", "gold", "\u5FAA\u56FE\u65BD\u5DE5", "Navigate and build", "\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E\u540C\u65F6\u6709 grep\u3001glob\u3001\u5F00\u53D1\u6D41\u7A0B\u53CA\u6587\u4EF6\u4EA4\u4ED8\u7684\u6D41\u7A0B", "Accumulate 25 completed turns with grep, glob, a build sequence and file delivery", { mappedBuildTurns: 25 }, true],
+  ["long-session", "craft", "gold", "\u6DF1\u8015\u4E00\u9685", "Stay with the work", "\u5728\u540C\u4E00\u4E2A\u6709\u4EA4\u4ED8\u8BB0\u5F55\u7684\u4E3B\u4F1A\u8BDD\u4E2D\uFF0C\u6B63\u5E38\u5B8C\u6210 100 \u8F6E", "Normally complete 100 turns in a single main session containing a file delivery", { maxDeliveredSessionTurns: 100 }],
+  ["planner-parallel", "skills", "gold", "\u9F50\u5934\u5E76\u8FDB", "Parallel checklist", "\u7D2F\u8BA1 10 \u8F6E\u5C06\u81F3\u5C11 3 \u9879\u3001\u66FE\u6709\u4E24\u9879\u540C\u65F6\u8FDB\u884C\u4E2D\u7684\u540C\u4E00\u6E05\u5355\u66F4\u65B0\u4E3A\u5168\u5B8C\u6210", "In 10 completed turns, finish an unchanged 3+ item list that recorded 2 items in progress together", { parallelChecklistTurns: 10 }, true],
+  ["program-delivery", "automation", "gold", "\u7A0B\u5E8F\u5230\u6210\u679C", "Programs to artifacts", "\u7D2F\u8BA1\u5B8C\u6210 25 \u8F6E\u5148\u5B8C\u6210\u65E0\u9519\u8BEF PTC \u7A0B\u5E8F\u3001\u540E\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Accumulate 25 completed turns that finish an error-free PTC program before delivering files", { ptcDeliveryTurns: 25 }, true],
+  ["token-scribe", "journey", "silver", "\u5B57\u91CC\u884C\u95F4", "Words accumulated", "\u7D2F\u8BA1\u8BB0\u5F55 100 \u4E07\u8F93\u51FA Token\uFF1B\u4E0D\u542B\u8F93\u5165\u3001\u7F3A\u5931\u7528\u91CF\u6216\u5931\u8D25\u5C1D\u8BD5", "Accumulate 1 million recorded output tokens; excludes input, missing usage and failed attempts", { tokens: 1e6 }, true],
+  ["team-conductor", "orchestration", "gold", "\u63A5\u529B\u6307\u6325", "Relay conductor", "\u7D2F\u8BA1\u5B8C\u6210 50 \u8F6E\u6709\u5B50\u4EE3\u7406\u5B8C\u6210\u54CD\u5E94\u540E\u518D\u4EA4\u4ED8\u7684\u4E3B\u4F1A\u8BDD\u6D41\u7A0B", "Accumulate 50 main turns with a linked child response completed before delivery", { collaborationTurns: 50 }, true],
+  ["monthly-streak", "journey", "gold", "\u6708\u5EA6\u8FDE\u8F7D", "A month of returning", "\u8FDE\u7EED 30 \u5929\u53D1\u9001\u7528\u6237\u6D88\u606F", "Send user messages on 30 consecutive dates", { bestStreak: 30 }]
+]);
+var secrets = make("secret", [
+  ["secret-archive", "research", "secret", "\u65E7\u77E5\u65B0\u89E3", "Old knowledge, new insight", "\u5B8C\u6210 5 \u8F6E\u5148\u68C0\u7D22\u5386\u53F2\u3001\u540E\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Complete 5 turns with history search before file delivery", { archiveTurns: 5 }],
+  ["secret-method", "craft", "secret", "\u7AE0\u6CD5", "Method", "\u5B8C\u6210 10 \u8F6E\u540C\u65F6\u6709\u5148\u89C4\u5212\u540E\u6267\u884C\u3001grep\u3001\u5F00\u53D1\u6D41\u7A0B\u53CA\u4EA4\u4ED8\u7684\u6D41\u7A0B", "Complete 10 turns combining plan-first execution, grep, a build sequence and delivery", { methodTurns: 10 }],
+  ["secret-relay", "orchestration", "secret", "\u63A5\u529B\u8D5B", "Relay", "\u5B8C\u6210 3 \u8F6E\u540C\u65F6\u6709 Skill \u5B9E\u8DF5\u3001\u6B63\u5E38\u7ED3\u675F\u7684\u5DE5\u4F5C\u6D41\u3001\u5B50\u4EE3\u7406\u5B8C\u6210\u54CD\u5E94\u53CA\u968F\u540E\u4EA4\u4ED8\u7684\u4E3B\u4F1A\u8BDD\u6D41\u7A0B", "Complete 3 main turns with Skill practice, a completed workflow and a child response before delivery", { relayTurns: 3 }],
+  ["secret-comeback", "orchestration", "secret", "\u91CD\u6574\u65D7\u9F13", "Try again", "\u67D0\u5DE5\u4F5C\u6D41\u51FA\u9519\u540E\uFF0C\u518D\u542F\u52A8\u540C\u540D\u5DE5\u4F5C\u6D41\u5E76\u6B63\u5E38\u5B8C\u6210", "After a workflow fails, start and complete a later run with the same name", { workflowRecoveries: 1 }],
+  ["secret-allrounder", "mastery", "secret", "\u5341\u9879\u5168\u80FD", "Ten capabilities", "\u5728\u540C\u4E00\u6B63\u5E38\u5B8C\u6210\u7684\u8F6E\u6B21\u4E2D\u4F7F\u7528 10 \u7C7B\u80FD\u529B", "Use 10 recognized capability groups in one normally completed turn", { maxTurnFeatures: 10 }],
+  ["secret-quiet", "craft", "secret", "\u987A\u7545\u534F\u594F", "A smooth sequence", "\u5B8C\u6210 10 \u8F6E\u6709\u5F00\u53D1\u6D41\u7A0B\u53CA\u4EA4\u4ED8\u3001\u4E14\u6240\u6709\u5DE5\u5177\u8FD4\u56DE\u5747\u65E0\u9519\u8BEF\u6807\u8BB0\u7684\u6D41\u7A0B\uFF1B\u4E0D\u4EE3\u8868\u6D4B\u8BD5\u901A\u8FC7", "Complete 10 build-and-delivery turns with no tool error flags; this does not certify passing tests", { quietBuildTurns: 10 }],
+  ["secret-study", "skills", "secret", "\u77E5\u884C\u76F8\u63A5", "Study into practice", "\u5B8C\u6210 10 \u8F6E\u540C\u65F6\u52A0\u8F7D Skill\u3001\u5B8C\u6210\u7814\u7A76\u6D41\u7A0B\u5E76\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Complete 10 turns combining a loaded Skill, research sequence and file delivery", { skillResearchTurns: 10 }],
+  ["secret-unblocked", "journey", "secret", "\u7834\u5C40", "Past the block", "\u5C06\u4E00\u4E2A\u66FE\u8BB0\u5F55\u4E3A\u963B\u585E\u7684\u540C\u4E00\u76EE\u6807\u8BB0\u5F55\u4E3A\u5B8C\u6210", "Record a goal as completed after that same goal was recorded as blocked", { recoveredGoals: 1 }],
+  ["secret-finish", "skills", "secret", "\u6536\u5B98\u6709\u5E8F", "An orderly finish", "\u5B8C\u6210 10 \u8F6E\u540C\u65F6\u5B8C\u6210\u540C\u4E00\u6E05\u5355\u3001\u5F00\u53D1\u6D41\u7A0B\u5E76\u4EA4\u4ED8\u6587\u4EF6\u7684\u6D41\u7A0B", "Complete 10 turns combining an unchanged finished checklist, build sequence and file delivery", { checklistBuildTurns: 10 }]
+]);
+var achievements = [...coreAchievements, ...specialties, ...secrets, ...make("core", [
+  ["platinum", "mastery", "platinum", "\u6210\u5C31\u6BBF\u5802", "Hall of mastery", "\u89E3\u9501\u5168\u90E8 24 \u9879\u6838\u5FC3\u6210\u5C31\uFF1B\u4E13\u9879\u3001\u9690\u85CF\u548C\u6210\u5C31\u5347\u7EA7\u4E0D\u5F71\u54CD\u767D\u91D1", "Unlock all 24 core achievements; specialties, secrets and achievement levels do not block platinum", {}]
+])];
 function progressOf(achievement, stats) {
   const requirements = achievement.requirements.map(([metric, target]) => ({
     metric,
@@ -741,22 +155,36 @@ function progressOf(achievement, stats) {
     fraction: requirements.length === 0 ? 0 : requirements.reduce((sum, r) => sum + Math.min(1, r.value / r.target), 0) / requirements.length
   };
 }
+function achievementLevel(achievement, stats) {
+  if (!achievement.upgrade) return null;
+  const { metric, value, target: base } = progressOf(achievement, stats).requirements[0];
+  let level = 0, target = base;
+  while (value >= target && Number.isFinite(target * 2)) {
+    level++;
+    target *= 2;
+  }
+  return { level, metric, value, target, fraction: Math.min(1, value / target) };
+}
 function playerLevel(unlocked) {
   const xp = achievements.reduce((sum, item) => sum + (unlocked[item.id] ? item.points : 0), 0);
-  const thresholds = [0, 150, 600, 1500, 2500, 3500];
+  const thresholds = [0, 50, 150, 400, 800, 1500, 2500, 4e3, 6e3, 8e3];
   const level = thresholds.filter((value) => xp >= value).length;
   return { xp, level, current: thresholds[level - 1], next: thresholds[level] ?? null };
 }
 
 // src/locales.js
 var en = {
-  levelProgress: "Progress to the next level",
+  levelProgress: "Progress to the next player level",
   viewAll: "View all",
-  publicProgress: "{count} / {total} public achievements",
-  noTools: "Your successful tool calls will appear here.",
-  allPublicComplete: "All public challenges complete. Your platinum badge is waiting in the collection.",
+  publicProgress: "{count} / {total} core achievements",
+  noTools: "Your non-error tool returns will appear here.",
+  allPublicComplete: "All one-time public challenges complete.",
   pathLabel: "Path",
   statusLabel: "Progress",
+  collectionLabel: "Collection",
+  difficultyLabel: "Difficulty",
+  allCollections: "All collections",
+  allDifficulties: "All difficulties",
   resultCount: "{count} achievements",
   noMatches: "No achievements match these filters.",
   resetFilters: "Reset filters",
@@ -764,7 +192,7 @@ var en = {
   title: "DSH Achievement Hall",
   button: "Achievements",
   close: "Close",
-  intro: "Build useful habits. Explore more of DSH. Make the work count.",
+  intro: "Explore DSH. Build your practice. Take on the next challenge.",
   overview: "Overview",
   achievements: "Achievements",
   all: "All paths",
@@ -776,10 +204,13 @@ var en = {
   completed: "Complete",
   progress: "{count} / {total} unlocked",
   xp: "{xp} XP",
-  level: "Level {level}",
-  nextLevel: "{xp} XP to next level",
-  maxLevel: "Highest level",
+  level: "Player level {level}",
+  nextLevel: "{xp} XP to next player level",
+  maxLevel: "Highest player level",
   unlockNotice: "{count} new achievements unlocked",
+  upgradeable: "Upgradeable",
+  achievementLevel: "Lv. {level}",
+  nextAchievementLevel: "Next: Lv. {level}",
   loading: "Loading statistics",
   offline: "Statistics could not be refreshed. Your last results are still shown.",
   importing: "Reading session history \xB7 {count} sessions remaining",
@@ -787,22 +218,28 @@ var en = {
   ready: "Synced from session logs",
   retry: "Retry history import",
   timezone: "Activity timezone: {zone}",
-  coverage: "Counts include stored sessions available to this DSH profile. Inherited fork history is excluded.",
-  privacy: "Stored locally: counters and achievement progress. No prompts, file contents or tool results are copied.",
+  coverage: "Main sessions and subagent sessions are separate. Tool and outcome totals include both, including PTC subcalls. Inherited fork history is excluded.",
+  privacy: "Stored locally: counters, timestamps and correlation IDs. No prompts, file contents or tool result bodies are copied.",
   noData: "Your adventure starts with your next session.",
   rules: "How progress works",
-  rulesText: "Capability progress uses tool results without an error flag. A build loop means read \u2192 modify \u2192 command in one session; it does not certify that tests passed. Optional tools must be enabled in DSH. XP is awarded once per achievement.",
-  oldCleared: "Development counters have been reset. Statistics are rebuilt from session logs.",
-  toolUsage: "Successful tool calls",
+  rulesText: "Sequences count once per normally completed turn. Non-error tool returns do not certify passing tests or artifact quality. Only the 24 core achievements are required for platinum. Optional specialties require the corresponding DSH tools.",
+  levelRules: "Upgradeable cumulative achievements start at Lv. 1 when unlocked; every doubling adds a level. One-time challenges and hidden achievements do not level up. Player XP is awarded only on the first unlock.",
+  collectionHint: "{public} public achievements \xB7 {secret} hidden challenges \xB7 {upgradeable} upgradeable achievements",
+  missingUsage: "{count} assistant messages have no recorded output usage; the token total excludes them.",
+  toolUsage: "Non-error tool returns",
   activity: "User messages by hour",
-  paths: "Choose your next challenge",
-  earnedAt: "Unlocked {date}",
+  paths: "Your next challenge",
+  earnedAt: "First unlocked {date}",
   requirement: "{metric}: {value} / {target}",
+  "track.core": "Core",
+  "track.specialty": "Specialty",
+  "track.secret": "Hidden",
   "category.journey": "Developer journey",
   "category.craft": "Engineering craft",
   "category.research": "Research & delivery",
   "category.orchestration": "Collaboration & workflows",
   "category.skills": "Skills & planning",
+  "category.automation": "PTC & terminals",
   "category.mastery": "Mastery",
   "tier.bronze": "Apprentice",
   "tier.silver": "Practitioner",
@@ -813,43 +250,26 @@ var en = {
   "rank.1": "Explorer",
   "rank.2": "Apprentice",
   "rank.3": "Practitioner",
-  "rank.4": "Engineer",
-  "rank.5": "Expert",
-  "rank.6": "Master",
-  "metric.sessions": "Active sessions",
-  "metric.messages": "User messages",
-  "metric.toolCalls": "Tool calls",
-  "metric.tokens": "Output tokens",
-  "metric.steps": "Closed steps",
-  "metric.successfulCalls": "Successful calls",
-  "metric.activeDays": "Active dates",
-  "metric.bestStreak": "Best day streak",
-  "metric.buildLoops": "Build-loop sessions",
-  "metric.researchLoops": "Research-loop sessions",
-  "metric.plannedSessions": "Planned sessions",
-  "metric.skillSessions": "Skill-practice sessions",
-  "metric.delegationSessions": "Delegation\u2192delivery sessions",
-  "metric.terminalSessions": "Terminal-cycle sessions",
-  "metric.fileChanges": "File modifications",
-  "metric.historySearches": "History searches",
-  "metric.distinctSkills": "Distinct Skills",
-  "metric.toolKinds": "Different tools",
-  "metric.featureKinds": "Capability categories",
-  "metric.goals": "Completed goals",
-  "metric.workflows": "Completed workflows",
-  "metric.broadSessions": "Broad-capability sessions",
-  "metric.archiveSessions": "History\u2192research sessions",
-  "metric.methodSessions": "Methodical sessions",
-  "metric.relaySessions": "Relay sessions"
+  "rank.4": "Builder",
+  "rank.5": "Engineer",
+  "rank.6": "Specialist",
+  "rank.7": "Expert",
+  "rank.8": "Master",
+  "rank.9": "Grandmaster",
+  "rank.10": "Legend"
 };
 var zh = {
-  levelProgress: "\u5347\u5F80\u4E0B\u4E00\u7EA7\u7684\u8FDB\u5EA6",
+  levelProgress: "\u5347\u5F80\u4E0B\u4E00\u73A9\u5BB6\u7B49\u7EA7\u7684\u8FDB\u5EA6",
   viewAll: "\u67E5\u770B\u5168\u90E8",
-  publicProgress: "\u516C\u5F00\u6210\u5C31 {count} / {total}",
-  noTools: "\u6210\u529F\u4F7F\u7528\u5DE5\u5177\u540E\uFF0C\u8FD9\u91CC\u4F1A\u663E\u793A\u8C03\u7528\u5206\u5E03",
-  allPublicComplete: "\u516C\u5F00\u6311\u6218\u5DF2\u5168\u90E8\u5B8C\u6210\uFF0C\u524D\u5F80\u56FE\u9274\u67E5\u770B\u4F60\u7684\u767D\u91D1\u6210\u5C31",
+  publicProgress: "\u6838\u5FC3\u6210\u5C31 {count} / {total}",
+  noTools: "\u5DE5\u5177\u8FD4\u56DE\u540E\uFF0C\u8FD9\u91CC\u4F1A\u663E\u793A\u975E\u9519\u8BEF\u8C03\u7528\u5206\u5E03",
+  allPublicComplete: "\u516C\u5F00\u7684\u4E00\u6B21\u6027\u6311\u6218\u5DF2\u5168\u90E8\u5B8C\u6210",
   pathLabel: "\u6210\u957F\u8DEF\u7EBF",
   statusLabel: "\u89E3\u9501\u72B6\u6001",
+  collectionLabel: "\u6210\u5C31\u5206\u518C",
+  difficultyLabel: "\u96BE\u5EA6",
+  allCollections: "\u5168\u90E8\u5206\u518C",
+  allDifficulties: "\u5168\u90E8\u96BE\u5EA6",
   resultCount: "{count} \u9879\u6210\u5C31",
   noMatches: "\u6CA1\u6709\u7B26\u5408\u7B5B\u9009\u6761\u4EF6\u7684\u6210\u5C31",
   resetFilters: "\u91CD\u7F6E\u7B5B\u9009",
@@ -869,10 +289,13 @@ var zh = {
   completed: "\u5DF2\u8FBE\u6210",
   progress: "\u5DF2\u89E3\u9501 {count} / {total}",
   xp: "{xp} XP",
-  level: "\u7B49\u7EA7 {level}",
-  nextLevel: "\u8DDD\u79BB\u4E0B\u4E00\u7EA7 {xp} XP",
-  maxLevel: "\u5DF2\u8FBE\u6700\u9AD8\u7B49\u7EA7",
+  level: "\u73A9\u5BB6\u7B49\u7EA7 {level}",
+  nextLevel: "\u8DDD\u79BB\u4E0B\u4E00\u73A9\u5BB6\u7B49\u7EA7 {xp} XP",
+  maxLevel: "\u5DF2\u8FBE\u6700\u9AD8\u73A9\u5BB6\u7B49\u7EA7",
   unlockNotice: "\u89E3\u9501\u4E86 {count} \u4E2A\u65B0\u6210\u5C31",
+  upgradeable: "\u53EF\u5347\u7EA7",
+  achievementLevel: "Lv. {level}",
+  nextAchievementLevel: "\u4E0B\u4E00\u7B49\u7EA7 Lv. {level}",
   loading: "\u6B63\u5728\u8BFB\u53D6\u7EDF\u8BA1",
   offline: "\u6682\u65F6\u65E0\u6CD5\u5237\u65B0\u7EDF\u8BA1\uFF0C\u5DF2\u4FDD\u7559\u4E0A\u6B21\u7ED3\u679C",
   importing: "\u6B63\u5728\u8BFB\u53D6\u4F1A\u8BDD\u5386\u53F2 \xB7 \u5269\u4F59 {count} \u4E2A\u4F1A\u8BDD",
@@ -880,22 +303,28 @@ var zh = {
   ready: "\u5DF2\u4ECE\u4F1A\u8BDD\u65E5\u5FD7\u540C\u6B65",
   retry: "\u91CD\u65B0\u5BFC\u5165\u5386\u53F2",
   timezone: "\u6D3B\u8DC3\u65F6\u533A\uFF1A{zone}",
-  coverage: "\u7EDF\u8BA1\u5F53\u524D DSH \u914D\u7F6E\u53EF\u8BFB\u53D6\u7684\u5386\u53F2\u4F1A\u8BDD\uFF1B\u5206\u53C9\u7EE7\u627F\u7684\u5386\u53F2\u4E0D\u91CD\u590D\u8BA1\u6570",
-  privacy: "\u6570\u636E\u4FDD\u5B58\u5728\u672C\u673A\uFF0C\u4EC5\u8BB0\u5F55\u8BA1\u6570\u4E0E\u6210\u5C31\u8FDB\u5EA6\uFF0C\u4E0D\u590D\u5236\u63D0\u793A\u8BCD\u3001\u6587\u4EF6\u5185\u5BB9\u6216\u5DE5\u5177\u7ED3\u679C",
+  coverage: "\u4E3B\u4F1A\u8BDD\u4E0E\u5B50\u4EE3\u7406\u4F1A\u8BDD\u5206\u5F00\u8BA1\u6570\uFF1B\u5DE5\u5177\u548C\u6210\u679C\u7EDF\u8BA1\u5305\u542B\u53CC\u65B9\u53CA PTC \u5B50\u8C03\u7528\uFF0C\u5206\u53C9\u7EE7\u627F\u7684\u5386\u53F2\u4E0D\u91CD\u590D\u7D2F\u8BA1",
+  privacy: "\u6570\u636E\u4EC5\u4FDD\u5B58\u5728\u672C\u673A\uFF0C\u8BB0\u5F55\u8BA1\u6570\u3001\u65F6\u95F4\u53CA\u5173\u8054\u6807\u8BC6\uFF0C\u4E0D\u590D\u5236\u63D0\u793A\u8BCD\u3001\u6587\u4EF6\u5185\u5BB9\u6216\u5DE5\u5177\u7ED3\u679C\u6B63\u6587",
   noData: "\u4E0B\u4E00\u6B21\u5F00\u53D1\uFF0C\u5C31\u662F\u5192\u9669\u7684\u8D77\u70B9",
   rules: "\u8FDB\u5EA6\u5982\u4F55\u8BA1\u7B97",
-  rulesText: "\u80FD\u529B\u8FDB\u5EA6\u4F9D\u636E\u672A\u6807\u8BB0\u9519\u8BEF\u7684\u5DE5\u5177\u7ED3\u679C\u3002\u5F00\u53D1\u95ED\u73AF\u6307\u540C\u4E00\u4F1A\u8BDD\u5185\u4F9D\u6B21\u8BFB\u53D6\u3001\u4FEE\u6539\u3001\u8FD0\u884C\u547D\u4EE4\uFF0C\u4E0D\u4EE3\u8868\u6D4B\u8BD5\u4E00\u5B9A\u901A\u8FC7\u3002\u53EF\u9009\u5DE5\u5177\u9700\u8981\u5728 DSH \u4E2D\u542F\u7528\u3002\u6BCF\u9879\u6210\u5C31\u4EC5\u5956\u52B1\u4E00\u6B21 XP\u3002",
-  oldCleared: "\u5F00\u53D1\u7248\u8BA1\u6570\u5DF2\u6E05\u9664\uFF0C\u6B63\u5728\u6839\u636E\u4F1A\u8BDD\u65E5\u5FD7\u91CD\u65B0\u7EDF\u8BA1",
-  toolUsage: "\u6210\u529F\u5DE5\u5177\u8C03\u7528",
+  rulesText: "\u7EC4\u5408\u6D41\u7A0B\u5728\u6B63\u5E38\u7ED3\u675F\u7684\u4E00\u8F6E\u4E2D\u6700\u591A\u8BA1\u4E00\u6B21\u3002\u5DE5\u5177\u672A\u6807\u8BB0\u9519\u8BEF\u4E0D\u4EE3\u8868\u6D4B\u8BD5\u901A\u8FC7\u6216\u4EA7\u7269\u8D28\u91CF\u8FBE\u6807\u3002\u767D\u91D1\u4EC5\u9700\u89E3\u9501 24 \u9879\u6838\u5FC3\u6210\u5C31\uFF0C\u4E13\u9879\u6311\u6218\u9700\u8981\u542F\u7528\u5BF9\u5E94 DSH \u80FD\u529B\u3002",
+  levelRules: "\u7D2F\u8BA1\u578B\u6210\u5C31\u89E3\u9501\u5373\u4E3A Lv. 1\uFF0C\u7D2F\u8BA1\u503C\u6BCF\u7FFB\u500D\u5347\u4E00\u7EA7\u3002\u4E00\u6B21\u6027\u6311\u6218\u53CA\u9690\u85CF\u6210\u5C31\u4E0D\u5347\u7EA7\u3002\u73A9\u5BB6 XP \u4EC5\u5728\u9996\u6B21\u89E3\u9501\u65F6\u83B7\u5F97\u3002",
+  collectionHint: "{public} \u9879\u516C\u5F00\u6210\u5C31 \xB7 {secret} \u9879\u9690\u85CF\u6311\u6218 \xB7 {upgradeable} \u9879\u53EF\u5347\u7EA7\u6210\u5C31",
+  missingUsage: "\u6709 {count} \u6761\u52A9\u624B\u6D88\u606F\u672A\u8BB0\u5F55\u8F93\u51FA\u7528\u91CF\uFF0CToken \u603B\u6570\u4E0D\u5305\u542B\u8FD9\u4E9B\u6D88\u606F",
+  toolUsage: "\u975E\u9519\u8BEF\u5DE5\u5177\u8FD4\u56DE",
   activity: "\u7528\u6237\u6D88\u606F\u7684\u5C0F\u65F6\u5206\u5E03",
-  paths: "\u9009\u62E9\u4E0B\u4E00\u9879\u6311\u6218",
-  earnedAt: "\u89E3\u9501\u4E8E {date}",
+  paths: "\u4E0B\u4E00\u9879\u6311\u6218",
+  earnedAt: "\u9996\u6B21\u89E3\u9501\u4E8E {date}",
   requirement: "{metric}\uFF1A{value} / {target}",
+  "track.core": "\u6838\u5FC3",
+  "track.specialty": "\u4E13\u9879",
+  "track.secret": "\u9690\u85CF",
   "category.journey": "\u5F00\u53D1\u8005\u65C5\u7A0B",
   "category.craft": "\u5DE5\u7A0B\u6280\u827A",
   "category.research": "\u7814\u7A76\u4E0E\u4EA4\u4ED8",
   "category.orchestration": "\u534F\u4F5C\u4E0E\u7F16\u6392",
   "category.skills": "\u6280\u80FD\u4E0E\u89C4\u5212",
+  "category.automation": "PTC \u4E0E\u7EC8\u7AEF",
   "category.mastery": "\u7CBE\u901A\u4E4B\u8DEF",
   "tier.bronze": "\u5165\u95E8",
   "tier.silver": "\u8FDB\u9636",
@@ -906,40 +335,90 @@ var zh = {
   "rank.1": "\u63A2\u7D22\u8005",
   "rank.2": "\u5B66\u5F92",
   "rank.3": "\u5B9E\u8DF5\u8005",
-  "rank.4": "\u5DE5\u7A0B\u5E08",
-  "rank.5": "\u4E13\u5BB6",
-  "rank.6": "\u5927\u5E08",
-  "metric.sessions": "\u6D3B\u8DC3\u4F1A\u8BDD",
-  "metric.messages": "\u7528\u6237\u6D88\u606F",
-  "metric.toolCalls": "\u5DE5\u5177\u8C03\u7528",
-  "metric.tokens": "\u8F93\u51FA Tokens",
-  "metric.steps": "\u5B8C\u6210\u7684\u6B65\u9AA4",
-  "metric.successfulCalls": "\u6210\u529F\u8C03\u7528",
-  "metric.activeDays": "\u6D3B\u8DC3\u5929\u6570",
-  "metric.bestStreak": "\u6700\u957F\u8FDE\u7EED\u5929\u6570",
-  "metric.buildLoops": "\u5F00\u53D1\u95ED\u73AF\u4F1A\u8BDD",
-  "metric.researchLoops": "\u7814\u7A76\u95ED\u73AF\u4F1A\u8BDD",
-  "metric.plannedSessions": "\u89C4\u5212\u4F1A\u8BDD",
-  "metric.skillSessions": "Skill \u5B9E\u8DF5\u4F1A\u8BDD",
-  "metric.delegationSessions": "\u5B50\u4EE3\u7406\u2192\u4EA4\u4ED8\u4F1A\u8BDD",
-  "metric.terminalSessions": "\u7EC8\u7AEF\u95ED\u73AF\u4F1A\u8BDD",
-  "metric.fileChanges": "\u6587\u4EF6\u4FEE\u6539",
-  "metric.historySearches": "\u5386\u53F2\u68C0\u7D22",
-  "metric.distinctSkills": "\u4E0D\u540C Skill",
-  "metric.toolKinds": "\u4E0D\u540C\u5DE5\u5177",
-  "metric.featureKinds": "\u80FD\u529B\u7C7B\u522B",
-  "metric.goals": "\u5DF2\u5B8C\u6210\u76EE\u6807",
-  "metric.workflows": "\u5DF2\u5B8C\u6210\u5DE5\u4F5C\u6D41",
-  "metric.broadSessions": "\u591A\u80FD\u529B\u4F1A\u8BDD",
-  "metric.archiveSessions": "\u5386\u53F2\u7814\u7A76\u4F1A\u8BDD",
-  "metric.methodSessions": "\u7AE0\u6CD5\u4F1A\u8BDD",
-  "metric.relaySessions": "\u63A5\u529B\u4F1A\u8BDD"
+  "rank.4": "\u6784\u5EFA\u8005",
+  "rank.5": "\u5DE5\u7A0B\u5E08",
+  "rank.6": "\u4E13\u624D",
+  "rank.7": "\u4E13\u5BB6",
+  "rank.8": "\u5927\u5E08",
+  "rank.9": "\u5B97\u5E08",
+  "rank.10": "\u4F20\u8BF4"
 };
-for (const achievement of achievements) {
-  en["achievement." + achievement.id + ".name"] = achievement.name.en;
-  zh["achievement." + achievement.id + ".name"] = achievement.name.zh;
-  en["achievement." + achievement.id + ".description"] = achievement.description.en;
-  zh["achievement." + achievement.id + ".description"] = achievement.description.zh;
+var metrics = {
+  sessions: ["Main sessions", "\u4E3B\u4F1A\u8BDD"],
+  subagent: ["Subagent sessions", "\u5B50\u4EE3\u7406\u4F1A\u8BDD"],
+  messages: ["User messages", "\u7528\u6237\u6D88\u606F"],
+  toolCalls: ["Tool calls", "\u5DE5\u5177\u8C03\u7528"],
+  tokens: ["Recorded output tokens", "\u5DF2\u8BB0\u5F55\u8F93\u51FA Token"],
+  steps: ["Closed steps", "\u5DF2\u7ED3\u675F\u6B65\u9AA4"],
+  completedTurns: ["Normally completed turns", "\u6B63\u5E38\u7ED3\u675F\u8F6E\u6B21"],
+  successfulCalls: ["Non-error tool returns", "\u975E\u9519\u8BEF\u5DE5\u5177\u8FD4\u56DE"],
+  failedCalls: ["Tool error returns", "\u5DE5\u5177\u9519\u8BEF\u8FD4\u56DE"],
+  activeDays: ["Active dates", "\u6D3B\u8DC3\u5929\u6570"],
+  activeWeeks: ["Active calendar weeks", "\u6D3B\u8DC3\u81EA\u7136\u5468"],
+  activeMonths: ["Active calendar months", "\u6D3B\u8DC3\u81EA\u7136\u6708"],
+  bestStreak: ["Best day streak", "\u6700\u957F\u8FDE\u7EED\u5929\u6570"],
+  buildLoops: ["Build turns", "\u5F00\u53D1\u6D41\u7A0B\u8F6E\u6B21"],
+  researchLoops: ["Research turns", "\u7814\u7A76\u6D41\u7A0B\u8F6E\u6B21"],
+  plannedTurns: ["Plan-first turns", "\u5148\u89C4\u5212\u540E\u6267\u884C\u8F6E\u6B21"],
+  checklistTurns: ["Finished-checklist turns", "\u6E05\u5355\u5B8C\u6210\u8F6E\u6B21"],
+  parallelChecklistTurns: ["Parallel-checklist turns", "\u5E76\u884C\u72B6\u6001\u6E05\u5355\u5B8C\u6210\u8F6E\u6B21"],
+  skillTurns: ["Skill-practice turns", "Skill \u5B9E\u8DF5\u8F6E\u6B21"],
+  skillComboTurns: ["Multi-Skill practice turns", "\u591A Skill \u5B9E\u8DF5\u8F6E\u6B21"],
+  maxSkillsPerTurn: ["Skills before practice in one turn", "\u5355\u8F6E\u5B9E\u8DF5\u524D\u7684 Skill \u79CD\u7C7B"],
+  delegationCalls: ["Delegation calls", "\u5B50\u4EE3\u7406\u8C03\u7528"],
+  collaborationTurns: ["Child response \u2192 delivery turns", "\u5B50\u4EE3\u7406\u54CD\u5E94\u540E\u4EA4\u4ED8\u8F6E\u6B21"],
+  maxTeamSize: ["Responding children before one delivery", "\u5355\u8F6E\u4EA4\u4ED8\u524D\u5B8C\u6210\u54CD\u5E94\u7684\u5B50\u4EE3\u7406"],
+  terminalCycles: ["Matching terminal cycles", "\u540C\u4E00\u7EC8\u7AEF\u64CD\u4F5C\u6D41\u7A0B"],
+  fileChanges: ["File modification calls", "\u6587\u4EF6\u4FEE\u6539\u8C03\u7528"],
+  historySearches: ["History searches", "\u5386\u53F2\u68C0\u7D22"],
+  historySessions: ["Main sessions with history search", "\u5386\u53F2\u68C0\u7D22\u4E3B\u4F1A\u8BDD"],
+  searchSessions: ["Main sessions using grep and glob", "\u540C\u65F6\u4F7F\u7528 grep \u4E0E glob \u7684\u4E3B\u4F1A\u8BDD"],
+  distinctSkills: ["Distinct Skills", "\u4E0D\u540C Skill"],
+  toolKinds: ["Different tools", "\u4E0D\u540C\u5DE5\u5177"],
+  featureKinds: ["Capability groups", "\u80FD\u529B\u7C7B\u522B"],
+  goals: ["Goals recorded complete", "\u8BB0\u5F55\u5B8C\u6210\u7684\u76EE\u6807"],
+  recoveredGoals: ["Blocked goals later completed", "\u963B\u585E\u540E\u5B8C\u6210\u7684\u76EE\u6807"],
+  workflows: ["Normally ended workflows", "\u6B63\u5E38\u7ED3\u675F\u7684\u5DE5\u4F5C\u6D41"],
+  cleanWorkflows: ["All-completed workflows with 3+ members", "\u81F3\u5C11\u4E09\u540D\u6210\u5458\u5168\u5B8C\u6210\u7684\u5DE5\u4F5C\u6D41"],
+  stagedWorkflows: ["All-completed workflows with 2+ phases", "\u81F3\u5C11\u4E24\u4E2A\u9636\u6BB5\u4E14\u6210\u5458\u5168\u5B8C\u6210\u7684\u5DE5\u4F5C\u6D41"],
+  maxWorkflowMembers: ["Members in one all-completed workflow", "\u5355\u6B21\u5168\u5B8C\u6210\u5DE5\u4F5C\u6D41\u7684\u6210\u5458\u6570"],
+  distinctWorkflows: ["Completed workflow names", "\u5B8C\u6210\u7684\u5DE5\u4F5C\u6D41\u540D\u79F0\u6570"],
+  workflowRecoveries: ["Failed workflow names later completed", "\u5931\u8D25\u540E\u91CD\u65B0\u5B8C\u6210\u7684\u540C\u540D\u5DE5\u4F5C\u6D41"],
+  broadTurns: ["Turns with 6+ capability groups", "\u81F3\u5C11\u516D\u7C7B\u80FD\u529B\u7684\u8F6E\u6B21"],
+  maxTurnFeatures: ["Capability groups in one turn", "\u5355\u8F6E\u80FD\u529B\u7C7B\u522B"],
+  archiveTurns: ["History search \u2192 delivery turns", "\u5386\u53F2\u68C0\u7D22\u540E\u4EA4\u4ED8\u8F6E\u6B21"],
+  methodTurns: ["Plan, search, build and delivery turns", "\u89C4\u5212\u3001\u68C0\u7D22\u3001\u5F00\u53D1\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  mappedBuildTurns: ["grep, glob, build and delivery turns", "\u4EE3\u7801\u68C0\u7D22\u3001\u5F00\u53D1\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  quietBuildTurns: ["Build-and-delivery turns without tool errors", "\u65E0\u5DE5\u5177\u9519\u8BEF\u7684\u5F00\u53D1\u4EA4\u4ED8\u8F6E\u6B21"],
+  skillResearchTurns: ["Skill, research and delivery turns", "Skill\u3001\u7814\u7A76\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  relayTurns: ["Skill, workflow, child and delivery turns", "Skill\u3001\u5DE5\u4F5C\u6D41\u3001\u5B50\u4EE3\u7406\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  checklistBuildTurns: ["Checklist, build and delivery turns", "\u6E05\u5355\u3001\u5F00\u53D1\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  visionDeliveryTurns: ["Image-reading and delivery turns", "\u56FE\u7247\u8BFB\u53D6\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  semanticDeliveryTurns: ["LSP and delivery turns", "LSP \u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  resourceDeliveryTurns: ["MCP resource and delivery turns", "MCP \u8D44\u6E90\u8BFB\u53D6\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  browserDeliveryTurns: ["Browser and delivery turns", "\u6D4F\u89C8\u5668\u4F7F\u7528\u53CA\u4EA4\u4ED8\u8F6E\u6B21"],
+  ptcCalls: ["PTC subcalls", "PTC \u5B50\u8C03\u7528"],
+  ptcPrograms: ["PTC programs without error flags", "\u65E0\u9519\u8BEF\u6807\u8BB0\u7684 PTC \u7A0B\u5E8F"],
+  ptcMultiPrograms: ["PTC programs with 3+ groups", "\u81F3\u5C11\u4E09\u7C7B\u80FD\u529B\u7684 PTC \u7A0B\u5E8F"],
+  ptcBatchPrograms: ["PTC programs with 10+ subcalls", "\u81F3\u5C11\u5341\u4E2A\u5B50\u8C03\u7528\u7684 PTC \u7A0B\u5E8F"],
+  maxPtcFeatures: ["Capability groups in one PTC program", "\u5355\u6B21 PTC \u7A0B\u5E8F\u7684\u80FD\u529B\u7C7B\u522B"],
+  ptcDeliveryTurns: ["PTC \u2192 delivery turns", "PTC \u540E\u4EA4\u4ED8\u8F6E\u6B21"],
+  deliveries: ["Recorded file deliveries", "\u6587\u4EF6\u4EA4\u4ED8\u8BB0\u5F55"],
+  deliverySessions: ["Main sessions with deliveries", "\u6709\u4EA4\u4ED8\u7684\u4E3B\u4F1A\u8BDD"],
+  deliveryDays: ["Active dates with deliveries", "\u6709\u4EA4\u4ED8\u7684\u6D3B\u8DC3\u65E5\u671F"],
+  practiceDays: ["Active dates with build turns", "\u6709\u5F00\u53D1\u6D41\u7A0B\u7684\u6D3B\u8DC3\u65E5\u671F"],
+  researchDays: ["Active dates with research turns", "\u6709\u7814\u7A76\u6D41\u7A0B\u7684\u6D3B\u8DC3\u65E5\u671F"],
+  maxDeliveredSessionTurns: ["Turns in one main session with delivery", "\u540C\u4E00\u6709\u4EA4\u4ED8\u4E3B\u4F1A\u8BDD\u7684\u8F6E\u6B21"]
+};
+for (const [key, [english, chinese]] of Object.entries(metrics)) {
+  en["metric." + key] = english;
+  zh["metric." + key] = chinese;
+}
+for (const item of achievements) {
+  en["achievement." + item.id + ".name"] = item.name.en;
+  zh["achievement." + item.id + ".name"] = item.name.zh;
+  en["achievement." + item.id + ".description"] = item.description.en;
+  zh["achievement." + item.id + ".description"] = item.description.zh;
 }
 var dictionaries = { en, zh };
 
@@ -963,7 +442,7 @@ function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearT
       try {
         const data = await fetchSnapshot(lifetime.signal, retry);
         if (stopped) return;
-        if (data?.schemaVersion !== 1 || !data.stats || !data.unlocked || !data.status || !Array.isArray(data.stats.hours) || data.stats.hours.length !== 24 || !Number.isFinite(data.pollMs) || data.pollMs < 1e3) throw new Error("Invalid achievements response");
+        if (data?.schemaVersion !== 2 || !data.stats || !data.unlocked || !data.status || !Array.isArray(data.stats.hours) || data.stats.hours.length !== 24 || !Number.isFinite(data.pollMs) || data.pollMs < 1e3) throw new Error("Invalid achievements response");
         const ids = Object.keys(data.unlocked);
         const fresh = baselineReady ? ids.filter((id) => !seen.has(id)).length : 0;
         baselineReady ||= ["ready", "partial"].includes(data.status.phase);
@@ -1008,7 +487,7 @@ function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearT
 }
 
 // src/client.css
-var client_default = ".dsha-dialog { width: min(1040px, 100%) !important; max-height: 100%; }\n.dsha-content { overflow: auto; min-height: 0; }\n.dsha {\n  --dsha-accent: var(--dsw-alias-link);\n  color: var(--dsw-alias-label-primary);\n  font: 13px/1.55 var(--dsw-font-family);\n  font-variant-numeric: tabular-nums;\n}\n.dsha * { box-sizing: border-box; }\n.dsha p { margin: 0; }\n.dsha button, .dsha select { font: inherit; color: inherit; }\n.dsha button { cursor: pointer; }\n.dsha-muted, .dsha-kicker { color: var(--dsw-alias-label-secondary); }\n.dsha-caption { font-size: 12px; line-height: 1.5; }\n.dsha-hero {\n  display: flex; align-items: center; gap: 22px; padding: 26px;\n  border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg);\n  background: linear-gradient(115deg, color-mix(in srgb, var(--dsha-accent) 9%, var(--dsw-alias-bg-layer-1)), var(--dsw-alias-bg-layer-1) 75%);\n}\n.dsha-level-ring {\n  display: grid; place-items: center; flex: 0 0 88px; width: 88px; height: 88px;\n  border-radius: 50%; corner-shape: round;\n  background: conic-gradient(var(--dsha-accent) var(--dsha-progress), color-mix(in srgb, var(--dsha-accent) 12%, var(--dsw-alias-bg-layer-1)) 0);\n}\n.dsha-level-core {\n  display: flex; flex-direction: column; align-items: center; justify-content: center;\n  width: 76px; height: 76px; border-radius: 50%; corner-shape: round;\n  color: var(--dsha-accent); background: var(--dsw-alias-bg-layer-1);\n}\n.dsha-level-core strong { font-size: 26px; line-height: 1.1; font-weight: 500; }\n.dsha-identity { flex: 1; min-width: 0; }\n.dsha-kicker { font-size: 12px; line-height: 1.5; }\n.dsha-rank { font-size: 26px; line-height: 1.3; font-weight: 500; margin: 4px 0 6px; }\n.dsha-level-detail { flex: 0 0 190px; }\n.dsha-score { font-size: 26px; line-height: 1.3; font-weight: 500; color: var(--dsha-accent); }\n.dsha progress {\n  display: block; appearance: none; width: 100%; height: 5px; margin: 10px 0;\n  border: 0; border-radius: var(--dsw-radius-xs); overflow: hidden;\n  background: var(--dsw-alias-bg-skeleton); accent-color: var(--dsha-accent);\n}\n.dsha progress::-webkit-progress-bar { background: var(--dsw-alias-bg-skeleton); }\n.dsha progress::-webkit-progress-value { background: var(--dsha-accent); border-radius: var(--dsw-radius-xs); }\n.dsha progress::-moz-progress-bar { background: var(--dsha-accent); border-radius: var(--dsw-radius-xs); }\n.dsha-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0 22px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-status-dot { width: 6px; height: 6px; border-radius: 50%; corner-shape: round; background: var(--dsw-alias-state-success-primary); }\n.dsha-status[data-phase=partial] .dsha-status-dot, .dsha-status[data-phase=error] .dsha-status-dot { background: var(--dsw-alias-state-warn-primary); }\n.dsha-status[data-phase=importing] .dsha-status-dot { background: var(--dsha-accent); }\n.dsha-navigation { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin: 0 0 18px; }\n.dsha-collection { display: flex; align-items: center; gap: 7px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-collection svg { color: var(--dsha-accent); }\n.dsha-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }\n.dsha-stat { padding: 16px; border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); min-width: 0; }\n.dsha-stat-label { display: flex; align-items: center; gap: 7px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.5; }\n.dsha-stat-label svg { color: var(--dsha-accent); flex-shrink: 0; }\n.dsha-stat strong { display: block; font-size: 26px; line-height: 1.3; font-weight: 500; margin-top: 9px; overflow-wrap: anywhere; }\n.dsha-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 12px; }\n.dsha-section-heading h2, .dsha-chart h2 { font-size: 16px; line-height: 1.5; font-weight: 500; margin: 0; }\n.dsha-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }\n.dsha-card {\n  --dsha-medal-color: var(--dsw-alias-label-secondary);\n  display: flex; flex-direction: column; min-width: 0; padding: 20px;\n  border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg);\n  background: var(--dsw-alias-bg-layer-1);\n}\n.dsha-card[data-tier=silver] { --dsha-medal-color: var(--dsw-alias-label-deep-diving); }\n.dsha-card[data-tier=gold], .dsha-card[data-tier=legendary] { --dsha-medal-color: var(--dsw-alias-state-warn-primary); }\n.dsha-card[data-tier=platinum] { --dsha-medal-color: var(--dsha-accent); }\n.dsha-card[data-unlocked=true] { background: linear-gradient(135deg, color-mix(in srgb, var(--dsha-medal-color) 5%, var(--dsw-alias-bg-layer-1)), var(--dsw-alias-bg-layer-1) 65%); }\n.dsha-card-head { display: flex; align-items: center; gap: 14px; }\n.dsha-medal {\n  position: relative; display: grid; place-items: center; flex: 0 0 52px; height: 52px;\n  border-radius: 50%; corner-shape: round; color: var(--dsha-medal-color);\n  background: color-mix(in srgb, var(--dsha-medal-color) 8%, var(--dsw-alias-bg-layer-1));\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsha-medal-color) 22%, transparent), inset 0 0 0 5px var(--dsw-alias-bg-layer-1);\n}\n.dsha-card[data-tier=legendary] .dsha-medal { outline: 1px dashed var(--dsha-medal-color); outline-offset: 3px; }\n.dsha-card[data-tier=secret] .dsha-medal { border: 1px dashed var(--dsw-alias-border-l3); box-shadow: none; }\n.dsha-card[data-tier=platinum] .dsha-medal { outline: 1px solid var(--dsha-medal-color); outline-offset: 3px; }\n.dsha-medal-check { display: grid; place-items: center; position: absolute; right: -2px; bottom: 0; border-radius: 50%; corner-shape: round; color: var(--dsha-accent); background: var(--dsw-alias-bg-layer-1); }\n.dsha-card-heading { flex: 1; min-width: 0; }\n.dsha-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; line-height: 1.5; }\n.dsha-tier { color: var(--dsw-alias-label-secondary); }\n.dsha-xp { color: var(--dsw-alias-label-secondary); white-space: nowrap; }\n.dsha-card h3 { font-size: 16px; line-height: 1.5; font-weight: 500; margin: 3px 0 0; overflow-wrap: anywhere; }\n.dsha-card .dsha-card-description { color: var(--dsw-alias-label-secondary); margin: 16px 0; }\n.dsha-card-progress, .dsha-card-bottom { margin-top: auto; }\n.dsha-card-bottom { display: flex; align-items: center; gap: 7px; font-size: 12px; }\n.dsha-progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; line-height: 1.5; color: var(--dsw-alias-label-secondary); }\n.dsha-card[data-unlocked=true] .dsha-progress-label { color: var(--dsha-accent); }\n.dsha-requirements { display: grid; gap: 5px; font-size: 12px; line-height: 1.5; margin: 0; padding: 0; list-style: none; color: var(--dsw-alias-label-secondary); }\n.dsha-requirements li { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }\n.dsha-requirement-value { display: flex; align-items: center; gap: 4px; white-space: nowrap; }\n.dsha-requirements [data-complete=true] .dsha-requirement-value { color: var(--dsha-accent); }\n.dsha-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }\n.dsha-chart { padding: 20px; min-width: 0; border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg); background: var(--dsw-alias-bg-layer-1); }\n.dsha-chart-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }\n.dsha-chart-heading svg { color: var(--dsha-accent); flex-shrink: 0; }\n.dsha-tool-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 11px; }\n.dsha-tool-list li { display: flex; align-items: center; gap: 12px; }\n.dsha-tool-rank { font-size: 12px; color: var(--dsw-alias-label-secondary); }\n.dsha-tool-body { flex: 1; min-width: 0; }\n.dsha-list-row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 5px; }\n.dsha-list-row code { font-family: var(--ds-font-family-code); font-size: 12px; overflow-wrap: anywhere; }\n.dsha-track { height: 4px; border-radius: var(--dsw-radius-xs); background: var(--dsw-alias-bg-skeleton); overflow: hidden; }\n.dsha-track span { display: block; height: 100%; width: var(--dsha-fill); background: color-mix(in srgb, var(--dsha-accent) 65%, var(--dsw-alias-bg-layer-1)); border-radius: inherit; }\n.dsha-hours {\n  display: flex; align-items: stretch; gap: 4px; height: 150px; margin: 22px 0 8px;\n  background: repeating-linear-gradient(to top, var(--dsw-alias-border-l1) 0 .5px, transparent .5px 25%);\n}\n.dsha-hour-slot { display: flex; align-items: end; flex: 1; min-width: 0; border-radius: var(--dsw-radius-xs); }\n.dsha-hour { display: block; width: 100%; height: var(--dsha-height); min-height: 2px; background: color-mix(in srgb, var(--dsha-accent) 65%, var(--dsw-alias-bg-layer-1)); border-radius: var(--dsw-radius-xs) var(--dsw-radius-xs) 0 0; }\n.dsha-hour[data-empty=true] { background: var(--dsw-alias-border-l2); }\n.dsha-hour-slot:hover .dsha-hour, .dsha-hour-slot:focus-visible .dsha-hour { background: var(--dsha-accent); }\n.dsha-hours-labels { display: flex; justify-content: space-between; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; min-height: 160px; padding: 24px; text-align: center; color: var(--dsw-alias-label-secondary); }\n.dsha-empty svg { color: var(--dsha-accent); }\n.dsha-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 18px; }\n.dsha-filters label { display: grid; gap: 6px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-filters select { max-width: 100%; padding: 8px 12px; background: var(--dsw-alias-bg-layer-1); border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-sm); cursor: pointer; color: var(--dsw-alias-label-primary); }\n.dsha-filter-count { margin-left: auto; padding-bottom: 8px; font-size: 12px; }\n.dsha-footer { border-top: .5px solid var(--dsw-alias-border-l2); padding-top: 16px; margin-top: 24px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-footer summary { cursor: pointer; width: fit-content; }\n.dsha-footer p { margin-top: 10px; }\n.dsha-error { border-left: 3px solid var(--dsw-alias-state-warn-primary); padding: 8px 12px; margin: 12px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }\n.dsha-launcher { display: flex; align-items: center; gap: 6px; background: none; border: 0; color: var(--dsw-alias-label-secondary); padding: 5px; cursor: pointer; font: inherit; }\n.dsha-launcher-count { display: grid; place-items: center; min-width: 19px; height: 19px; padding: 0 5px; border-radius: var(--dsw-radius-sm); background: var(--dsw-alias-bg-skeleton); font-size: 11px; }\n.dsha-loading { min-height: 180px; display: grid; place-items: center; }\n.dsha-spinner { width: 22px; height: 22px; border: 2px solid var(--dsw-alias-border-l1); border-top-color: var(--dsw-alias-link); border-radius: 50%; corner-shape: round; animation: dsha-spin 1s linear infinite; }\n.dsha :is(button, select, summary, [tabindex]):focus-visible, .dsha-launcher:focus-visible { outline: 2px solid var(--dsw-alias-link); outline-offset: 3px; }\n@keyframes dsha-spin { to { transform: rotate(360deg); } }\n@media (max-width: 720px) {\n  .dsha-hero { flex-wrap: wrap; padding: 20px; gap: 16px; }\n  .dsha-level-detail { flex: 1 0 100%; }\n  .dsha-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }\n  .dsha-grid, .dsha-charts { grid-template-columns: 1fr; }\n  .dsha-navigation { align-items: flex-start; flex-direction: column; }\n}\n@media (max-width: 420px) {\n  .dsha-hero { padding: 16px; gap: 12px; }\n  .dsha-level-ring { flex-basis: 64px; width: 64px; height: 64px; }\n  .dsha-level-core { width: 54px; height: 54px; }\n  .dsha-level-core strong, .dsha-rank, .dsha-score { font-size: 22px; }\n  .dsha-card, .dsha-chart, .dsha-stat { padding: 14px; }\n  .dsha-card-head { gap: 10px; }\n  .dsha-filters label { flex: 1 1 120px; min-width: 0; }\n}\n@media (prefers-reduced-motion: reduce) { .dsha-spinner { animation: none; } }\n";
+var client_default = ".dsha-dialog { width: min(1040px, 100%) !important; max-height: 100%; }\n.dsha-content { overflow: auto; min-height: 0; }\n.dsha {\n  --dsha-accent: var(--dsw-alias-link);\n  color: var(--dsw-alias-label-primary);\n  font: 13px/1.55 var(--dsw-font-family);\n  font-variant-numeric: tabular-nums;\n}\n.dsha * { box-sizing: border-box; }\n.dsha p { margin: 0; }\n.dsha button, .dsha select { font: inherit; color: inherit; }\n.dsha button { cursor: pointer; }\n.dsha-muted, .dsha-kicker { color: var(--dsw-alias-label-secondary); }\n.dsha-caption { font-size: 12px; line-height: 1.5; }\n.dsha-hero {\n  display: flex; align-items: center; gap: 22px; padding: 26px;\n  border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg);\n  background: linear-gradient(115deg, color-mix(in srgb, var(--dsha-accent) 9%, var(--dsw-alias-bg-layer-1)), var(--dsw-alias-bg-layer-1) 75%);\n}\n.dsha-level-ring {\n  display: grid; place-items: center; flex: 0 0 88px; width: 88px; height: 88px;\n  border-radius: 50%; corner-shape: round;\n  background: conic-gradient(var(--dsha-accent) var(--dsha-progress), color-mix(in srgb, var(--dsha-accent) 12%, var(--dsw-alias-bg-layer-1)) 0);\n}\n.dsha-level-core {\n  display: flex; flex-direction: column; align-items: center; justify-content: center;\n  width: 76px; height: 76px; border-radius: 50%; corner-shape: round;\n  color: var(--dsha-accent); background: var(--dsw-alias-bg-layer-1);\n}\n.dsha-level-core strong { font-size: 26px; line-height: 1.1; font-weight: 500; }\n.dsha-identity { flex: 1; min-width: 0; }\n.dsha-kicker { font-size: 12px; line-height: 1.5; }\n.dsha-rank { font-size: 26px; line-height: 1.3; font-weight: 500; margin: 4px 0 6px; }\n.dsha-level-detail { flex: 0 0 190px; }\n.dsha-score { font-size: 26px; line-height: 1.3; font-weight: 500; color: var(--dsha-accent); }\n.dsha progress {\n  display: block; appearance: none; width: 100%; height: 5px; margin: 10px 0;\n  border: 0; border-radius: var(--dsw-radius-xs); overflow: hidden;\n  background: var(--dsw-alias-bg-skeleton); accent-color: var(--dsha-accent);\n}\n.dsha progress::-webkit-progress-bar { background: var(--dsw-alias-bg-skeleton); }\n.dsha progress::-webkit-progress-value { background: var(--dsha-accent); border-radius: var(--dsw-radius-xs); }\n.dsha progress::-moz-progress-bar { background: var(--dsha-accent); border-radius: var(--dsw-radius-xs); }\n.dsha-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0 22px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-status-dot { width: 6px; height: 6px; border-radius: 50%; corner-shape: round; background: var(--dsw-alias-state-success-primary); }\n.dsha-status[data-phase=partial] .dsha-status-dot, .dsha-status[data-phase=error] .dsha-status-dot { background: var(--dsw-alias-state-warn-primary); }\n.dsha-status[data-phase=importing] .dsha-status-dot { background: var(--dsha-accent); }\n.dsha-navigation { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin: 0 0 18px; }\n.dsha-collection { display: flex; align-items: center; gap: 7px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-collection svg { color: var(--dsha-accent); }\n.dsha-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }\n.dsha-stat { padding: 16px; border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-layer-1); min-width: 0; }\n.dsha-stat-label { display: flex; align-items: center; gap: 7px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.5; }\n.dsha-stat-label svg { color: var(--dsha-accent); flex-shrink: 0; }\n.dsha-stat strong { display: block; font-size: 26px; line-height: 1.3; font-weight: 500; margin-top: 9px; overflow-wrap: anywhere; }\n.dsha-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 26px 0 12px; }\n.dsha-section-heading h2, .dsha-chart h2 { font-size: 16px; line-height: 1.5; font-weight: 500; margin: 0; }\n.dsha-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }\n.dsha-card {\n  --dsha-medal-color: var(--dsw-alias-label-secondary);\n  display: flex; flex-direction: column; min-width: 0; padding: 20px;\n  border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg);\n  background: var(--dsw-alias-bg-layer-1);\n}\n.dsha-card[data-tier=silver] { --dsha-medal-color: var(--dsw-alias-label-deep-diving); }\n.dsha-card[data-tier=gold], .dsha-card[data-tier=legendary] { --dsha-medal-color: var(--dsw-alias-state-warn-primary); }\n.dsha-card[data-tier=platinum] { --dsha-medal-color: var(--dsha-accent); }\n.dsha-card[data-unlocked=true] { background: linear-gradient(135deg, color-mix(in srgb, var(--dsha-medal-color) 5%, var(--dsw-alias-bg-layer-1)), var(--dsw-alias-bg-layer-1) 65%); }\n.dsha-card-head { display: flex; align-items: center; gap: 14px; }\n.dsha-medal {\n  position: relative; display: grid; place-items: center; flex: 0 0 52px; height: 52px;\n  border-radius: 50%; corner-shape: round; color: var(--dsha-medal-color);\n  background: color-mix(in srgb, var(--dsha-medal-color) 8%, var(--dsw-alias-bg-layer-1));\n  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dsha-medal-color) 22%, transparent), inset 0 0 0 5px var(--dsw-alias-bg-layer-1);\n}\n.dsha-card[data-tier=legendary] .dsha-medal { outline: 1px dashed var(--dsha-medal-color); outline-offset: 3px; }\n.dsha-card[data-tier=secret] .dsha-medal { border: 1px dashed var(--dsw-alias-border-l3); box-shadow: none; }\n.dsha-card[data-tier=platinum] .dsha-medal { outline: 1px solid var(--dsha-medal-color); outline-offset: 3px; }\n.dsha-medal-check { display: grid; place-items: center; position: absolute; right: -2px; bottom: 0; border-radius: 50%; corner-shape: round; color: var(--dsha-accent); background: var(--dsw-alias-bg-layer-1); }\n.dsha-card-heading { flex: 1; min-width: 0; }\n.dsha-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; line-height: 1.5; }\n.dsha-tier { color: var(--dsw-alias-label-secondary); }\n.dsha-xp { color: var(--dsw-alias-label-secondary); white-space: nowrap; }\n.dsha-card h3 { font-size: 16px; line-height: 1.5; font-weight: 500; margin: 3px 0 0; overflow-wrap: anywhere; }\n.dsha-card .dsha-card-description { color: var(--dsw-alias-label-secondary); margin: 16px 0; }\n.dsha-card-progress, .dsha-card-bottom { margin-top: auto; }\n.dsha-card-bottom { display: flex; align-items: center; gap: 7px; font-size: 12px; }\n.dsha-progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; line-height: 1.5; color: var(--dsw-alias-label-secondary); }\n.dsha-card[data-unlocked=true] .dsha-progress-label { color: var(--dsha-accent); }\n.dsha-requirements { display: grid; gap: 5px; font-size: 12px; line-height: 1.5; margin: 0; padding: 0; list-style: none; color: var(--dsw-alias-label-secondary); }\n.dsha-requirements li { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }\n.dsha-requirement-value { display: flex; align-items: center; gap: 4px; white-space: nowrap; }\n.dsha-requirements [data-complete=true] .dsha-requirement-value { color: var(--dsha-accent); }\n.dsha-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }\n.dsha-chart { padding: 20px; min-width: 0; border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-lg); background: var(--dsw-alias-bg-layer-1); }\n.dsha-chart-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }\n.dsha-chart-heading svg { color: var(--dsha-accent); flex-shrink: 0; }\n.dsha-tool-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 11px; }\n.dsha-tool-list li { display: flex; align-items: center; gap: 12px; }\n.dsha-tool-rank { font-size: 12px; color: var(--dsw-alias-label-secondary); }\n.dsha-tool-body { flex: 1; min-width: 0; }\n.dsha-list-row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 5px; }\n.dsha-list-row code { font-family: var(--ds-font-family-code); font-size: 12px; overflow-wrap: anywhere; }\n.dsha-track { height: 4px; border-radius: var(--dsw-radius-xs); background: var(--dsw-alias-bg-skeleton); overflow: hidden; }\n.dsha-track span { display: block; height: 100%; width: var(--dsha-fill); background: color-mix(in srgb, var(--dsha-accent) 65%, var(--dsw-alias-bg-layer-1)); border-radius: inherit; }\n.dsha-hours {\n  display: flex; align-items: stretch; gap: 4px; height: 150px; margin: 22px 0 8px;\n  background: repeating-linear-gradient(to top, var(--dsw-alias-border-l1) 0 .5px, transparent .5px 25%);\n}\n.dsha-hour-slot { display: flex; align-items: end; flex: 1; min-width: 0; border-radius: var(--dsw-radius-xs); }\n.dsha-hour { display: block; width: 100%; height: var(--dsha-height); min-height: 2px; background: color-mix(in srgb, var(--dsha-accent) 65%, var(--dsw-alias-bg-layer-1)); border-radius: var(--dsw-radius-xs) var(--dsw-radius-xs) 0 0; }\n.dsha-hour[data-empty=true] { background: var(--dsw-alias-border-l2); }\n.dsha-hour-slot:hover .dsha-hour, .dsha-hour-slot:focus-visible .dsha-hour { background: var(--dsha-accent); }\n.dsha-hours-labels { display: flex; justify-content: space-between; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; min-height: 160px; padding: 24px; text-align: center; color: var(--dsw-alias-label-secondary); }\n.dsha-empty svg { color: var(--dsha-accent); }\n.dsha-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 18px; }\n.dsha-filters label { display: grid; gap: 6px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-filters select { max-width: 100%; padding: 8px 12px; background: var(--dsw-alias-bg-layer-1); border: .5px solid var(--dsw-alias-border-l2); border-radius: var(--dsw-radius-sm); cursor: pointer; color: var(--dsw-alias-label-primary); }\n.dsha-filter-count { margin-left: auto; padding-bottom: 8px; font-size: 12px; }\n.dsha-footer { border-top: .5px solid var(--dsw-alias-border-l2); padding-top: 16px; margin-top: 24px; color: var(--dsw-alias-label-secondary); font-size: 12px; }\n.dsha-footer summary { cursor: pointer; width: fit-content; }\n.dsha-footer p { margin-top: 10px; }\n.dsha-error { border-left: 3px solid var(--dsw-alias-state-warn-primary); padding: 8px 12px; margin: 12px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }\n.dsha-launcher { display: flex; align-items: center; gap: 6px; background: none; border: 0; color: var(--dsw-alias-label-secondary); padding: 5px; cursor: pointer; font: inherit; }\n.dsha-launcher-count { display: grid; place-items: center; min-width: 19px; height: 19px; padding: 0 5px; border-radius: var(--dsw-radius-sm); background: var(--dsw-alias-bg-skeleton); font-size: 11px; }\n.dsha-loading { min-height: 180px; display: grid; place-items: center; }\n.dsha-spinner { width: 22px; height: 22px; border: 2px solid var(--dsw-alias-border-l1); border-top-color: var(--dsw-alias-link); border-radius: 50%; corner-shape: round; animation: dsha-spin 1s linear infinite; }\n.dsha :is(button, select, summary, [tabindex]):focus-visible, .dsha-launcher:focus-visible { outline: 2px solid var(--dsw-alias-link); outline-offset: 3px; }\n@keyframes dsha-spin { to { transform: rotate(360deg); } }\n@media (max-width: 720px) {\n  .dsha-hero { flex-wrap: wrap; padding: 20px; gap: 16px; }\n  .dsha-level-detail { flex: 1 0 100%; }\n  .dsha-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }\n  .dsha-grid, .dsha-charts { grid-template-columns: 1fr; }\n  .dsha-navigation { align-items: flex-start; flex-direction: column; }\n}\n@media (max-width: 420px) {\n  .dsha-hero { padding: 16px; gap: 12px; }\n  .dsha-level-ring { flex-basis: 64px; width: 64px; height: 64px; }\n  .dsha-level-core { width: 54px; height: 54px; }\n  .dsha-level-core strong, .dsha-rank, .dsha-score { font-size: 22px; }\n  .dsha-card, .dsha-chart, .dsha-stat { padding: 14px; }\n  .dsha-card-head { gap: 10px; }\n  .dsha-filters label { flex: 1 1 120px; min-width: 0; }\n}\n@media (prefers-reduced-motion: reduce) { .dsha-spinner { animation: none; } }\n\n.dsha-achievement-level { display: inline-block; margin-left: 8px; color: var(--dsha-accent); }\n.dsha-usage-note, .dsha-collection-hint { margin-top: 12px !important; }\n";
 
 // src/client.js
 var h = import_react.default.createElement;
@@ -1019,17 +498,22 @@ var categoryIcons = {
   research: import_dsh_client_ui_primitives.IconSearchOutlineRegular,
   orchestration: import_dsh_client_ui_primitives.IconBranchOutlineRegular,
   skills: import_dsh_client_ui_primitives.IconSkillOutlineRegular,
+  automation: import_dsh_client_ui_primitives.IconCodeOutlineRegular,
   mastery: import_dsh_client_ui_primitives.IconSparkleRegular
 };
 var statIcons = {
   sessions: import_dsh_client_ui_primitives.IconNewChatOutlineRegular,
-  messages: import_dsh_client_ui_primitives.IconSendOutlineRegular,
+  subagent: import_dsh_client_ui_primitives.IconBranchOutlineRegular,
   successfulCalls: import_dsh_client_ui_primitives.IconCodeOutlineRegular,
   tokens: import_dsh_client_ui_primitives.IconDataOutlineRegular,
-  steps: import_dsh_client_ui_primitives.IconChecklistOutlineRegular,
+  completedTurns: import_dsh_client_ui_primitives.IconChecklistOutlineRegular,
   activeDays: import_dsh_client_ui_primitives.IconClockOutlineRegular,
+  buildLoops: import_dsh_client_ui_primitives.IconCodeOutlineRegular,
+  deliveries: import_dsh_client_ui_primitives.IconSendOutlineRegular,
   goals: import_dsh_client_ui_primitives.IconGoalOutlineRegular,
-  workflows: import_dsh_client_ui_primitives.IconBranchOutlineRegular
+  workflows: import_dsh_client_ui_primitives.IconBranchOutlineRegular,
+  ptcPrograms: import_dsh_client_ui_primitives.IconCodeOutlineRegular,
+  collaborationTurns: import_dsh_client_ui_primitives.IconBranchOutlineRegular
 };
 var name = "dsh-achievements-client";
 var inject = ["slots", "locale", "connection"];
@@ -1082,9 +566,12 @@ function apply(ctx) {
     const unlocked = data.unlocked[item.id];
     const hidden = item.tier === "secret" && !unlocked;
     const progress = progressOf(item, data.stats);
-    const publicItems = achievements.filter((a) => !["secret", "platinum"].includes(a.tier));
+    const publicItems = coreAchievements;
+    const advancement = achievementLevel(item, data.stats);
+    const upgrading = !!unlocked && advancement !== null;
+    const requirements = upgrading ? [advancement] : progress.requirements;
     const platinumCount = publicItems.filter((a) => data.unlocked[a.id]).length;
-    const fraction = unlocked ? 1 : item.tier === "platinum" ? platinumCount / publicItems.length : progress.fraction;
+    const fraction = upgrading ? advancement.fraction : unlocked ? 1 : item.tier === "platinum" ? platinumCount / publicItems.length : progress.fraction;
     const title = hidden ? t("secret") : t("achievement." + item.id + ".name");
     const Icon = hidden ? import_dsh_client_ui_primitives.IconQuestionOutlineRegular : categoryIcons[item.category];
     return h(
@@ -1093,7 +580,8 @@ function apply(ctx) {
         className: "dsha-card",
         "data-tier": item.tier,
         "data-unlocked": !!unlocked,
-        "data-achievement-id": item.id
+        "data-achievement-id": item.id,
+        "data-achievement-level": upgrading ? advancement.level : void 0
       },
       h(
         "div",
@@ -1110,11 +598,20 @@ function apply(ctx) {
           h(
             "div",
             { className: "dsha-card-top" },
-            h("span", { className: "dsha-tier" }, t("tier." + item.tier)),
+            h(
+              "span",
+              { className: "dsha-tier" },
+              t("tier." + item.tier),
+              item.upgrade && h(
+                "span",
+                { className: "dsha-achievement-level" },
+                upgrading ? t("achievementLevel", { level: advancement.level }) : t("upgradeable")
+              )
+            ),
             h("span", { className: "dsha-xp" }, t("xp", { xp: item.points }))
           ),
           h("h3", null, title),
-          h("span", { className: "dsha-muted dsha-caption" }, t("category." + item.category))
+          h("span", { className: "dsha-muted dsha-caption" }, t("category." + item.category) + " \xB7 " + t("track." + item.track))
         )
       ),
       h("p", { className: "dsha-card-description" }, hidden ? t("secretHint") : t("achievement." + item.id + ".description")),
@@ -1124,11 +621,11 @@ function apply(ctx) {
         h(
           "div",
           { className: "dsha-progress-label" },
-          h("span", null, t(unlocked ? "completed" : "locked")),
+          h("span", null, upgrading ? t("nextAchievementLevel", { level: advancement.level + 1 }) : t(unlocked ? "completed" : "locked")),
           h("span", null, percent(fraction))
         ),
         h("progress", { max: 1, value: fraction, "aria-label": title }),
-        !unlocked && (item.tier === "platinum" ? h("p", { className: "dsha-caption dsha-muted" }, t("publicProgress", { count: platinumCount, total: publicItems.length })) : h("ul", { className: "dsha-requirements" }, progress.requirements.map((r) => h(
+        (!unlocked || upgrading) && (item.tier === "platinum" ? h("p", { className: "dsha-caption dsha-muted" }, t("publicProgress", { count: platinumCount, total: publicItems.length })) : h("ul", { className: "dsha-requirements" }, requirements.map((r) => h(
           "li",
           { key: r.metric, "data-complete": r.value >= r.target },
           h("span", null, metric(r.metric)),
@@ -1151,11 +648,13 @@ function apply(ctx) {
     const [tab, setTab] = import_react.default.useState("overview");
     const [category, setCategory] = import_react.default.useState("all");
     const [filter, setFilter] = import_react.default.useState("all");
+    const [track, setTrack] = import_react.default.useState("all");
+    const [tier, setTier] = import_react.default.useState("all");
     const level = playerLevel(data.unlocked);
     const count = achievements.filter((item) => data.unlocked[item.id]).length;
     const levelFraction = level.next === null ? 1 : (level.xp - level.current) / (level.next - level.current);
-    const publicNext = achievements.filter((item) => item.tier !== "secret" && item.tier !== "platinum" && !data.unlocked[item.id]).sort((a, b) => progressOf(b, data.stats).fraction - progressOf(a, data.stats).fraction).slice(0, 4);
-    const cards = achievements.filter((item) => (category === "all" || item.category === category) && (filter === "all" || !!data.unlocked[item.id] === (filter === "unlocked")));
+    const publicNext = achievements.filter((item) => item.tier !== "secret" && item.tier !== "platinum" && (!data.unlocked[item.id] || item.upgrade)).sort((a, b) => (achievementLevel(b, data.stats) ?? progressOf(b, data.stats)).fraction - (achievementLevel(a, data.stats) ?? progressOf(a, data.stats)).fraction).slice(0, 4);
+    const cards = achievements.filter((item) => (category === "all" || item.category === category) && (track === "all" || item.track === track) && (tier === "all" || item.tier === tier) && (filter === "all" || (filter === "upgradeable" ? item.upgrade : !!data.unlocked[item.id] === (filter === "unlocked"))));
     const toolEntries = Object.entries(data.stats.successfulTools).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const maxTool = Math.max(1, ...toolEntries.map(([, value]) => value));
     const maxHour = Math.max(1, ...data.stats.hours);
@@ -1225,6 +724,7 @@ function apply(ctx) {
             h("div", { className: "dsha-stat-label" }, h(Icon, { size: 17 }), h("span", null, t("metric." + key))),
             h("strong", null, fmt(data.stats[key]))
           ))),
+          data.stats.missingUsage > 0 && h("p", { className: "dsha-caption dsha-muted dsha-usage-note" }, t("missingUsage", { count: fmt(data.stats.missingUsage) })),
           h(
             "div",
             { className: "dsha-section-heading" },
@@ -1294,7 +794,27 @@ function apply(ctx) {
               h(
                 "select",
                 { value: category, "aria-label": t("pathLabel"), onChange: (e) => setCategory(e.target.value) },
-                ["all", "journey", "craft", "research", "orchestration", "skills", "mastery"].map((id) => h("option", { key: id, value: id }, id === "all" ? t("all") : t("category." + id)))
+                ["all", "journey", "craft", "research", "orchestration", "skills", "automation", "mastery"].map((id) => h("option", { key: id, value: id }, id === "all" ? t("all") : t("category." + id)))
+              )
+            ),
+            h(
+              "label",
+              null,
+              h("span", null, t("collectionLabel")),
+              h(
+                "select",
+                { value: track, "aria-label": t("collectionLabel"), onChange: (e) => setTrack(e.target.value) },
+                ["all", "core", "specialty", "secret"].map((id) => h("option", { key: id, value: id }, t(id === "all" ? "allCollections" : "track." + id)))
+              )
+            ),
+            h(
+              "label",
+              null,
+              h("span", null, t("difficultyLabel")),
+              h(
+                "select",
+                { value: tier, "aria-label": t("difficultyLabel"), onChange: (e) => setTier(e.target.value) },
+                ["all", "bronze", "silver", "gold", "legendary", "secret", "platinum"].map((id) => h("option", { key: id, value: id }, t(id === "all" ? "allDifficulties" : "tier." + id)))
               )
             ),
             h(
@@ -1304,7 +824,7 @@ function apply(ctx) {
               h(
                 "select",
                 { value: filter, "aria-label": t("statusLabel"), onChange: (e) => setFilter(e.target.value) },
-                ["all", "locked", "unlocked"].map((id) => h("option", { key: id, value: id }, t(id === "all" ? "allStatus" : id)))
+                ["all", "locked", "unlocked", "upgradeable"].map((id) => h("option", { key: id, value: id }, t(id === "all" ? "allStatus" : id)))
               )
             ),
             h("span", { className: "dsha-filter-count dsha-muted", role: "status" }, t("resultCount", { count: cards.length }))
@@ -1317,11 +837,18 @@ function apply(ctx) {
             h(import_dsh_client_ui_primitives.Button, { size: "sm", variant: "outline", onClick: () => {
               setCategory("all");
               setFilter("all");
+              setTrack("all");
+              setTier("all");
             } }, t("resetFilters"))
           )
         )
       ),
-      h("details", { className: "dsha-footer" }, h("summary", null, t("rules")), h("p", null, t("rulesText")), h("p", null, t("coverage")), h("p", null, t("privacy")))
+      h("p", { className: "dsha-caption dsha-muted dsha-collection-hint" }, t("collectionHint", {
+        public: achievements.filter((item) => item.tier !== "secret").length,
+        secret: achievements.filter((item) => item.tier === "secret").length,
+        upgradeable: achievements.filter((item) => item.upgrade).length
+      })),
+      h("details", { className: "dsha-footer" }, h("summary", null, t("rules")), h("p", null, t("rulesText")), h("p", null, t("levelRules")), h("p", null, t("coverage")), h("p", null, t("privacy")))
     );
   }
   function Overlay() {
