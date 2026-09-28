@@ -211,6 +211,8 @@ var en = {
   upgradeable: "Upgradeable",
   achievementLevel: "Lv. {level}",
   nextAchievementLevel: "Next: Lv. {level}",
+  versionMismatch: "Achievement versions differ. Restart DSH, then refresh this page.",
+  unavailable: "Statistics could not be loaded. Please retry.",
   loading: "Loading statistics",
   offline: "Statistics could not be refreshed. Your last results are still shown.",
   importing: "Reading session history \xB7 {count} sessions remaining",
@@ -296,6 +298,8 @@ var zh = {
   upgradeable: "\u53EF\u5347\u7EA7",
   achievementLevel: "Lv. {level}",
   nextAchievementLevel: "\u4E0B\u4E00\u7B49\u7EA7 Lv. {level}",
+  versionMismatch: "\u6210\u5C31\u63D2\u4EF6\u7248\u672C\u4E0D\u4E00\u81F4\uFF0C\u8BF7\u91CD\u542F DSH \u540E\u5237\u65B0\u9875\u9762",
+  unavailable: "\u6682\u65F6\u65E0\u6CD5\u8BFB\u53D6\u7EDF\u8BA1\uFF0C\u8BF7\u91CD\u8BD5",
   loading: "\u6B63\u5728\u8BFB\u53D6\u7EDF\u8BA1",
   offline: "\u6682\u65F6\u65E0\u6CD5\u5237\u65B0\u7EDF\u8BA1\uFF0C\u5DF2\u4FDD\u7559\u4E0A\u6B21\u7ED3\u679C",
   importing: "\u6B63\u5728\u8BFB\u53D6\u4F1A\u8BDD\u5386\u53F2 \xB7 \u5269\u4F59 {count} \u4E2A\u4F1A\u8BDD",
@@ -426,7 +430,7 @@ var dictionaries = { en, zh };
 function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearTimeout, onError }) {
   const lifetime = new AbortController();
   const subscribers = /* @__PURE__ */ new Set();
-  let state = { data: null, error: false, notice: 0, noticeId: 0, open: false };
+  let state = { data: null, error: false, versionMismatch: false, notice: 0, noticeId: 0, open: false };
   let timer, running, stopped = false, seen = /* @__PURE__ */ new Set(), baselineReady = false;
   const notify = () => {
     for (const listener of subscribers) listener();
@@ -439,9 +443,12 @@ function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearT
     if (stopped || running) return;
     cancel(timer);
     running = Promise.resolve().then(async () => {
+      let versionMismatch = false;
       try {
         const data = await fetchSnapshot(lifetime.signal, retry);
         if (stopped) return;
+        versionMismatch = Number.isInteger(data?.schemaVersion) && data.schemaVersion !== 2;
+        if (versionMismatch) throw new Error("Achievement response version differs; restart DSH and refresh the page");
         if (data?.schemaVersion !== 2 || !data.stats || !data.unlocked || !data.status || !Array.isArray(data.stats.hours) || data.stats.hours.length !== 24 || !Number.isFinite(data.pollMs) || data.pollMs < 1e3) throw new Error("Invalid achievements response");
         const ids = Object.keys(data.unlocked);
         const fresh = baselineReady ? ids.filter((id) => !seen.has(id)).length : 0;
@@ -450,13 +457,14 @@ function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearT
         change({
           data,
           error: false,
+          versionMismatch: false,
           notice: fresh || state.notice,
           noticeId: fresh ? state.noticeId + 1 : state.noticeId
         });
       } catch (error) {
         if (!stopped) {
           onError(error);
-          change({ error: true });
+          change({ error: true, versionMismatch });
         }
       } finally {
         running = void 0;
@@ -869,12 +877,12 @@ function apply(ctx) {
         state.error && h(
           "div",
           { className: "dsha-error", role: "alert" },
-          t("offline"),
+          t(state.versionMismatch ? "versionMismatch" : state.data ? "offline" : "unavailable"),
           h(import_dsh_client_ui_primitives.Button, { size: "sm", variant: "outline", onClick: () => {
             void dashboard.refresh(true);
           } }, t("retry"))
         ),
-        state.data ? h(Hall, { data: state.data }) : h(
+        state.data ? h(Hall, { data: state.data }) : !state.error && h(
           "div",
           { className: "dsha-loading" },
           h("span", { className: "dsha-spinner", role: "status", "aria-label": t("loading") })

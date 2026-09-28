@@ -5,7 +5,7 @@
 export function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel = clearTimeout, onError }) {
   const lifetime = new AbortController();
   const subscribers = new Set();
-  let state = { data: null, error: false, notice: 0, noticeId: 0, open: false };
+  let state = { data: null, error: false, versionMismatch: false, notice: 0, noticeId: 0, open: false };
   let timer, running, stopped = false, seen = new Set(), baselineReady = false;
   const notify = () => { for (const listener of subscribers) listener(); };
   const change = values => { state = { ...state, ...values }; notify(); };
@@ -13,9 +13,12 @@ export function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel =
     if (stopped || running) return;
     cancel(timer);
     running = Promise.resolve().then(async () => {
+      let versionMismatch = false;
       try {
         const data = await fetchSnapshot(lifetime.signal, retry);
         if (stopped) return;
+        versionMismatch = Number.isInteger(data?.schemaVersion) && data.schemaVersion !== 2;
+        if (versionMismatch) throw new Error('Achievement response version differs; restart DSH and refresh the page');
         if (data?.schemaVersion !== 2 || !data.stats || !data.unlocked || !data.status
           || !Array.isArray(data.stats.hours) || data.stats.hours.length !== 24
           || !Number.isFinite(data.pollMs) || data.pollMs < 1000) throw new Error('Invalid achievements response');
@@ -23,10 +26,10 @@ export function createDashboard({ fetchSnapshot, schedule = setTimeout, cancel =
         const fresh = baselineReady ? ids.filter(id => !seen.has(id)).length : 0;
         baselineReady ||= ['ready', 'partial'].includes(data.status.phase);
         seen = new Set(ids);
-        change({ data, error: false, notice: fresh || state.notice,
+        change({ data, error: false, versionMismatch: false, notice: fresh || state.notice,
           noticeId: fresh ? state.noticeId + 1 : state.noticeId });
       } catch (error) {
-        if (!stopped) { onError(error); change({ error: true }); }
+        if (!stopped) { onError(error); change({ error: true, versionMismatch }); }
       } finally {
         running = undefined;
         if (!stopped) timer = schedule(() => { void request(); }, state.data?.pollMs ?? 3000);

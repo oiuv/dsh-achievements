@@ -54,7 +54,7 @@ dsh plugin --profile web add ./dsh-achievements
 dsh web
 ```
 
-已运行的 DSH 需要重启 Host 并刷新网页。在侧栏点击**成就**。殿堂使用当前 DSH 主题，显示等级进度、图形成就徽章、工具调用条形图和小时活跃分布。
+安装或更新插件后，需要停止并重新启动 DSH，再刷新网页；只刷新网页可能让新前端连接到旧后端。出现「成就插件版本不一致」时，在启动终端按 Ctrl+C，重新运行对应的 Web 启动命令，再刷新页面。在侧栏点击**成就**。殿堂使用当前 DSH 主题，显示等级进度、图形成就徽章、工具调用条形图和小时活跃分布。
 
 仓库包含构建好的 `client.js`，安装无需执行构建脚本。package.json 和 cordis.patch.yml 中的包名 `@local/dsh-achievements` 必须保持一致。源码运行时，在 DSH 仓库根目录用 `pnpm dsh plugin --profile web remove @local/dsh-achievements` 卸载；使用全局 CLI 时省略 `pnpm`。
 

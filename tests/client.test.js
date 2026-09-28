@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { aggregate } from '../src/engine.js';
 import { achievements } from '../src/catalog.js';
 
-for(const scenario of ['empty','populated','near-complete','leveled']) for(const language of ['en','zh']) test('built client renders localized Hall and disposes effects: '+scenario+' '+language,async t=>{
+for(const scenario of ['empty','populated','near-complete','leveled','version-mismatch','unavailable']) for(const language of ['en','zh']) test('built client renders localized Hall and disposes effects: '+scenario+' '+language,async t=>{
   let registration,table,launcherButton;
   const components=new Map(),styles=new Set(),removed=[],disposers=[];
   const localeSnapshot={active:language,locales:['en','zh'],revision:0};
@@ -17,6 +17,9 @@ for(const scenario of ['empty','populated','near-complete','leveled']) for(const
     getLocale:()=>localeSnapshot,subscribe:()=>()=>{},
   };
   const data={schemaVersion:2,stats:aggregate([],{timeZone:'UTC',now:0}),unlocked:{},timeZone:'UTC',updatedAt:0,status:{phase:'ready',failed:0},pollMs:60000};
+  if (scenario === 'version-mismatch') data.schemaVersion=1;
+  if (scenario === 'unavailable') data.pollMs=0;
+  const failed=scenario==='version-mismatch'||scenario==='unavailable';
   if (scenario === 'populated') {
     Object.assign(data.stats, {
       sessions: 42, messages: 186, successfulCalls: 732, tokens: 128400, steps: 280, activeDays: 12,
@@ -79,7 +82,13 @@ for(const scenario of ['empty','populated','near-complete','leveled']) for(const
   launcherButton.props.onClick();
   const html=renderToStaticMarkup(React.createElement(overlay));
   assert.ok(html.includes(language==='zh'?'DSH 成就殿堂':'DSH Achievement Hall'));
-  assert.ok(html.includes(Object.keys(data.unlocked).length + ' / 81'));
+  if (!failed) assert.ok(html.includes(Object.keys(data.unlocked).length + ' / 81'));
+  else {
+    const key=scenario==='version-mismatch'?'versionMismatch':'unavailable';
+    assert.ok(html.includes(table[language][key]));
+    assert.equal(html.includes('dsha-spinner'),false);
+    assert.equal(html.includes(table[language].offline),false);
+  }
   if (scenario === 'empty') assert.ok(html.includes(language === 'zh' ? '工具返回后' : 'Your non-error tool returns'));
   else if (scenario === 'populated') {
     assert.equal((html.match(/class="dsha-hour-slot"/g)||[]).length,24);
@@ -102,7 +111,7 @@ for(const scenario of ['empty','populated','near-complete','leveled']) for(const
   const expected = new URL('./expected/hall.'+(scenario === 'empty' ? '' : scenario+'.')+language+'.html', import.meta.url);
   if (process.env.DSH_ACHIEVEMENTS_UPDATE_EXPECTED === '1') writeFileSync(expected, html+'\n');
   assert.equal(html+'\n', readFileSync(expected,'utf8'));
-  assert.equal((html.match(/data-achievement-id=/g)||[]).length,4);
+  assert.equal((html.match(/data-achievement-id=/g)||[]).length,failed?0:4);
   assert.deepEqual(removed,['dsh-ach-s-v4','dsh-ach-u-v2']);
   for(const dispose of disposers.splice(0).reverse())await dispose();
   assert.equal(styles.size,0);assert.equal(components.size,0);assert.equal(table,null);

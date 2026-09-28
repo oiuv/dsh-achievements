@@ -32,3 +32,26 @@ test('dispose cancels the active request and awaits it without notifying or resc
   await dashboard.refresh();await dashboard.dispose();await request;
   assert.equal(notify,0);assert.equal(schedules,0);
 });
+test('version mismatches request a restart, retain valid data and recover on matching responses',async t=>{
+  let response={...snapshot(),schemaVersion:1};
+  const errors=[];
+  const dashboard=createDashboard({fetchSnapshot:async()=>response,schedule:()=>0,cancel:()=>{},onError:error=>errors.push(error)});
+  t.after(()=>dashboard.dispose());
+  await dashboard.refresh();
+  assert.equal(dashboard.getSnapshot().versionMismatch,true);
+  assert.equal(dashboard.getSnapshot().data,null);
+  response=snapshot();await dashboard.refresh();
+  const last=dashboard.getSnapshot().data;
+  assert.equal(dashboard.getSnapshot().versionMismatch,false);
+  response={...snapshot(),schemaVersion:3};await dashboard.refresh();
+  assert.equal(dashboard.getSnapshot().versionMismatch,true);
+  assert.equal(dashboard.getSnapshot().data,last);
+  response={};await dashboard.refresh();
+  assert.equal(dashboard.getSnapshot().versionMismatch,false);
+  assert.equal(dashboard.getSnapshot().error,true);
+  assert.equal(dashboard.getSnapshot().data,last);
+  response=snapshot();await dashboard.refresh();
+  assert.equal(dashboard.getSnapshot().error,false);
+  assert.equal(dashboard.getSnapshot().versionMismatch,false);
+  assert.equal(errors.length,3);
+});

@@ -54,7 +54,7 @@ dsh plugin --profile web add ./dsh-achievements
 dsh web
 ```
 
-Restart an already running DSH Host and reload the page. Open **Achievements** in the sidebar. The Hall shows level progress, illustrated achievement badges, tool usage bars, and hourly activity in the current DSH theme.
+After installing or updating the plugin, stop and restart DSH, then refresh the browser; refreshing alone can connect the new client to the old Host. If the Hall reports differing achievement versions, press Ctrl+C in the launch terminal, rerun the appropriate Web launch command, then refresh the page. Open **Achievements** in the sidebar. The Hall shows level progress, illustrated achievement badges, tool usage bars, and hourly activity in the current DSH theme.
 
 The repository includes the built `client.js`; installation does not run a build script. Keep the package name `@local/dsh-achievements` consistent in package.json and cordis.patch.yml. From a DSH source checkout, remove with `pnpm dsh plugin --profile web remove @local/dsh-achievements`; with the global CLI, omit `pnpm`.
 
