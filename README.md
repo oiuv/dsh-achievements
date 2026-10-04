@@ -22,7 +22,7 @@ Browse achievement badges, unlock dates and progress, with filters for category 
 
 ## Install
 
-Requires DSH `0.1.7-rc.2`, its Web profile, and Node `^22.19.0 || >=24`. DSH APIs are pre-stable; other releases require verification.
+Requires DSH `0.1.7-rc.2` or `0.2.0-rc.1`, its Web profile, and Node `^22.19.0 || >=24`. DSH APIs are pre-stable; other releases require verification.
 
 ### From a DSH source checkout
 
